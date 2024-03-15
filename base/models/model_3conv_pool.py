@@ -17,9 +17,9 @@ class Model(nn.Module):
         sample_length = int(config.SAMPLING_RATE * config.SAMPLE_DURATION)
 
         self.feature_extractor = nn.Sequential(
-            nn.BatchNorm1d(len(config.CHANNELS)),
+            nn.BatchNorm1d(len(config.CHANNELS_IN_MODEL)),
             nn.ConstantPad1d((3, 4), 0),
-            nn.Conv1d(len(config.CHANNELS), 128, 8),
+            nn.Conv1d(len(config.CHANNELS_IN_MODEL), 128, 8),
             nn.ReLU(inplace=True),
             nn.BatchNorm1d(128),
 

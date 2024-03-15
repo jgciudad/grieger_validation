@@ -68,34 +68,27 @@ class ConfigLoader:
         assert type(self.SAMPLE_DURATION) in [int, float]
         self.SAMPLING_RATE = config['data']['sampling_rate']
         assert type(self.SAMPLE_DURATION) is int
-        self.SCORING_MAP = config['data']['scoring_map']
-        self.STAGE_MAP = config['data']['stage_map']
+        self.ORIGINAL_FS = config['data']['original_fs']
 
         # experiment
         exp_config = config['experiment']
         # data
         data_config = exp_config['data']
-        self.DATA_SPLIT = data_config['split']
-        assert 'train' in self.DATA_SPLIT and 'valid' in self.DATA_SPLIT, \
-            'DATA_SPLIT must at least contain keys train and valid'
         self.DATA_FILE = join(cache_dir, data_config['file'])
         self.STAGES = data_config['stages']
-        for k in self.STAGE_MAP:
-            msg = 'You are trying to map STAGE {} to STAGE {} that does not exist in experiment.data.stages'
-            assert self.STAGE_MAP[k] in self.STAGES + [None], msg.format(k, self.STAGE_MAP[k])
-        for s in self.STAGES:
-            assert s in self.SCORING_MAP, 'STAGE {} has no mapping in SCORING_MAP'.format(s)
-        for s in self.STAGES:
-            assert s in self.STAGE_MAP.values(), 'STAGE {} has no mapping in STAGE_MAP'.format(s)
         self.BALANCED_TRAINING = data_config['balanced_training']
         assert type(self.BALANCED_TRAINING) is bool
         self.BALANCING_WEIGHTS = data_config['balancing_weights']
         assert np.all([w >= 0 for w in self.BALANCING_WEIGHTS]), 'BALANCING_WEIGHTS must be non negative'
-        self.CHANNELS = data_config['channels']
+        self.CHANNELS_IN_MODEL = data_config['channels_in_model']
+        self.CHANNELS_IN_TABLE = data_config['channels_in_table']
+        self.LABS_CHANNELS = data_config['labs_channels']
         self.SAMPLES_LEFT = data_config['samples_left']
         assert type(self.SAMPLES_LEFT) is int
         self.SAMPLES_RIGHT = data_config['samples_right']
         assert type(self.SAMPLES_RIGHT) is int
+        self.LABS = data_config['labs']
+        self.ORIGINAL_DATASET_SIZE = data_config['original_dataset_size']
 
         # training
         training_config = exp_config['training']
@@ -106,10 +99,7 @@ class ConfigLoader:
         self.BATCH_SIZE = training_config['batch_size']
         assert type(self.BATCH_SIZE) is int
         self.DATA_FRACTION = training_config['data_fraction']
-        assert type(self.DATA_FRACTION) is float
-        self.DATA_FRACTION_STRAT = training_config['data_fraction_strat']
-        assert self.DATA_FRACTION_STRAT in ['uniform', None], \
-            'currently only "uniform" or None is supported as a data fraction strategy'
+        assert type(self.DATA_FRACTION) is bool
         self.EPOCHS = training_config['epochs']
         assert type(self.EPOCHS) is int
         self.WARMUP_EPOCHS = training_config['optimizer']['scheduler']['warmup_epochs']
@@ -167,7 +157,7 @@ class ConfigLoader:
     def load_config(self):
         """loads config from standard_config.yml and updates it with <experiment>.yml"""
         base_dir = realpath(join(dirname(__file__), '..'))
-        with open(join(base_dir, 'config', 'standard_config.yml'), 'r') as ymlfile:
+        with open(join(base_dir, 'config', 'standard_config_multiple_labs.yml'), 'r') as ymlfile:
             config = yaml.safe_load(ymlfile)
         with open(join(base_dir, 'config', self.experiment + '.yml'), 'r') as ymlfile:
             config = update_dict(config, yaml.safe_load(ymlfile))

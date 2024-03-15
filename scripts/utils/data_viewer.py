@@ -52,7 +52,7 @@ class DataViewer:
         plt.rcParams['axes.formatter.use_locale'] = True
 
         # create an axis for every CHANNEL + an axis for the labels + an axis for the predicted probabilities
-        self.fig, self.axes = plt.subplots(len(self.view_config.CHANNELS) + 2, sharex='all')
+        self.fig, self.axes = plt.subplots(len(self.view_config.CHANNELS_IN_MODEL) + 2, sharex='all')
         plt.subplots_adjust(bottom=0.18, top=0.95, hspace=0.2)
 
         # sliders to set window size and current sample are placed under the axes for data, etc
@@ -99,7 +99,7 @@ class DataViewer:
         # all data in dataloader, just needed to set limits for y-axis
         data_ges = np.r_[[self.datamap_view[i][0] * 1000 for i in range(len(self.datamap_view))]]
         # configure first axes for data from CHANNELs
-        for i, c in enumerate(self.view_config.CHANNELS):
+        for i, c in enumerate(self.view_config.CHANNELS_IN_MODEL):
             colors = {'EEG_FR': 'darkgreen', 'EEG1': 'darkgreen',
                       'EEG_PR': 'green',
                       'EEG_PL': 'limegreen', 'EEG2': 'limegreen',
@@ -142,7 +142,7 @@ class DataViewer:
         signals = np.concatenate([data[i][0] * 1000 for i in range(self.window_size)], axis=1)
         scores = np.array([class_order_mapping[data[i][1]] for i in range(self.window_size)]).repeat(self.window_points)
         # update CHANNEL axes and axis with labels
-        for i, c in enumerate(self.view_config.CHANNELS):
+        for i, c in enumerate(self.view_config.CHANNELS_IN_MODEL):
             self.lines[c].set_data(t, signals[i])
         self.lines['scores'].set_data(t, scores)
 

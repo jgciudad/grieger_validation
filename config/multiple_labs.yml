@@ -1,0 +1,83 @@
+general:
+  device: 'cpu'
+
+dirs:
+  cache: './cache/dataset'  # directory for cached files like the tranformed data file (see experiment.data.file)
+  data: '/Users/tlj258/small_dataset_validation/'  # directory containing data
+
+data:
+  sample_duration: 4  # seconds
+  sampling_rate: 64  # Hz
+  original_fs:  # Hz
+    Alessandro: 128
+    Antoine: 512
+    Kornum: 400
+
+experiment:
+  data:
+    file: 'multiple_labs.h5'  # stored in cache dir
+    stages: ['Wake', 'Non REM', 'REM', 'Art']
+    balanced_training: False
+    balancing_weights: [0.30, 0.18, 0.24, 0.14, 0.14]
+    channels_in_table: ['EEG1', 'EEG2', 'EEG3', 'EEG4', 'EMG']
+    channels_in_model: ['EEG1']
+    samples_left: 1
+    samples_right: 1
+    original_dataset_size: 366122 # rebalanced dataset #2 (see table 2 of Grieger)
+    labs: ['Antoine', 'Kornum', 'Alessandro', 'Sebastian', 'Maiken']
+    labs_channels: 
+      Alessandro: 
+        EEG1: 0
+        EMG: 1
+      Antoine:
+        EEG1: 0
+        EEG2: 1
+        EEG3: 2
+        EEG4: 3
+        EMG: 4
+      Maiken:
+        EEG1: 0
+        EMG: 1
+      Kornum:
+        EEG1: 0
+        EEG2: 1
+        EMG: 2
+      Sebastian:
+        EEG1': 1
+        EEG2': 2
+        EMG: 0
+
+  training:
+    log_interval: 10  # in percent
+    additional_model_safe: false
+    batch_size: 256
+    data_fraction: True
+    # data_fraction_strat: 'uniform'
+    epochs: 50
+    optimizer:
+      scheduler:
+        warmup_epochs: 12
+        mode: 'exp'
+        parameters: [0.06]
+      learning_rate: 256.e-6
+      class: 'RMSprop'
+      parameters: {}
+      l1_weight_decay: 0
+      l2_weight_decay: 0
+
+  evaluation:
+    batch_size: 512
+
+  model:
+    filters: 64
+    classifier_dropout: [0.0, 0.0]
+    feature_extr_dropout: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    name: 'model_8conv_2fc'
+
+  data_augmentation:
+    gain: 0.0
+    flip: 0.0
+    flip_all: 0.0
+    flip_hori: 0.0
+    window_warp_size: 0.0
+    time_shift: 0.0

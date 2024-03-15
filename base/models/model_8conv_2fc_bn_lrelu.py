@@ -18,8 +18,8 @@ class Model(nn.Module):
     def __init__(self, config: ConfigLoader):
         super(Model, self).__init__()
         self.feature_extractor = nn.Sequential(
-            nn.BatchNorm1d(len(config.CHANNELS)),
-            nn.Conv1d(len(config.CHANNELS), config.FILTERS, 5),
+            nn.BatchNorm1d(len(config.CHANNELS_IN_MODEL)),
+            nn.Conv1d(len(config.CHANNELS_IN_MODEL), config.FILTERS, 5),
             nn.LeakyReLU(inplace=True),
             nn.BatchNorm1d(config.FILTERS),
             nn.Dropout(p=config.FEATURE_EXTR_DROPOUT[0]),

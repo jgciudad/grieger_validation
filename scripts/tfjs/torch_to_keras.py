@@ -51,7 +51,7 @@ def load_torch_model(config):
     return model
 
 def torch_input_shape(config):
-    num_input_channels = len(config.CHANNELS)
+    num_input_channels = len(config.CHANNELS_IN_MODEL)
     num_samples = config.SAMPLES_LEFT + 1 + config.SAMPLES_RIGHT
     segment_length = int(num_samples * config.SAMPLE_DURATION * config.SAMPLING_RATE)
     return (1, num_input_channels, segment_length)
