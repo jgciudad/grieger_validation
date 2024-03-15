@@ -25,22 +25,22 @@ def parse():
     parser = argparse.ArgumentParser(description='training script')
     parser.add_argument('--experiment', '-e', required=True,
                         help='name of experiment to run')
+    parser.add_argument('--test_lab', '-e', required=True,
+                        help="lab to test the model on: 'Antoine', 'Kornum', 'Alessandro', 'Sebastian' or 'Maiken'")
 
     return parser.parse_args()
 
 
-def training():
+def training(test_lab):
     """train experiment as it is described in config"""
     result_logger = ResultLogger(config)  # wrapper for various methods to log/plot results
 
     # train dataloader with configured data augmentation and rebalancing
-    dl_train = TuebingenDataloader(config, 'train', config.BALANCED_TRAINING, augment_data=True,
+    dl_train = TuebingenDataloader(config, 'train', test_lab, config.BALANCED_TRAINING, augment_data=False,
                                    data_fraction=config.DATA_FRACTION)
-    # validation dataloader without modification of loaded data
-    dl_valid = TuebingenDataloader(config, 'valid', False, augment_data=False)
     # multithreaded pytorch dataloaders with 4 workers each, train data is shuffled
-    trainloader = t_data.DataLoader(dl_train, batch_size=config.BATCH_SIZE, shuffle=True, num_workers=4)
-    validationloader = t_data.DataLoader(dl_valid, batch_size=config.BATCH_SIZE_EVAL, shuffle=False, num_workers=4)
+    trainloader = t_data.DataLoader(dl_train.train_dataloader, batch_size=config.BATCH_SIZE, shuffle=True, num_workers=4)
+    validationloader = t_data.DataLoader(dl_train.val_dataloader, batch_size=config.BATCH_SIZE_EVAL, shuffle=False, num_workers=4)
 
     # create model from model_name given in config and load it onto configured DEVICE
     model = import_module('.' + config.MODEL_NAME, 'base.models').Model(config).to(config.DEVICE)
@@ -129,11 +129,11 @@ def training():
 
 if __name__ == '__main__':
     args = parse()
-    config = ConfigLoader(args.experiment)  # load config from experiment
+    config = ConfigLoader(args.experiment, args.test_lab)  # load config from experiment
 
     logger = Logger(config)  # create wrapper for logger
     # create log_file and initialize it with the script arguments and the config
     logger.init_log_file(args, basename(__file__))
 
     logger.fancy_log('start training with model: {}'.format(config.MODEL_NAME))
-    training()
+    training(test_lab=args.test_lab)
