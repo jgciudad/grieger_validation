@@ -40,9 +40,9 @@ class TuebingenDataloader(tud.Dataset):
 
         # file has to be opened here, so the indices for each stage can be loaded
         self.file = tables.open_file(self.config.DATA_FILE)
-        self.labs = self.get_lab_data()
+        self.labs_and_stages = self.get_lab_and_stage_data()
         # max index is needed to calculate limits for the additional samples loaded by SAMPLES_LEFT and SAMPLES_RIGHT
-        self.nitems = sum([len(l) for l in self.labs])
+        self.nitems = sum([sum([s.size for s in self.labs_and_stages[l].values()]) for l in self.labs_and_stages])
         self.indices = self.get_indices()
 
         if self.set == 'train':
@@ -132,10 +132,14 @@ class TuebingenDataloader(tud.Dataset):
 
         drawing of the samples is done with replacement, so samples can occur more than once in the dataloader """
         indices = np.empty(0)
-
-        data_dist = {l: len(n) for l, n in zip([x for x in self.config.LABS if x != self.test_lab], self.labs)}
+        
+        self.data_dist = {}
+        for lab in self.labs_and_stages:
+            self.data_dist[lab] = {}
+            for stage in self.labs_and_stages[lab]:
+                self.data_dist[lab][stage] = self.labs_and_stages[lab][stage].size
         logger.info(
-            'data distribution in database for dataset ' + str(self.set) + ':\n' + format_dictionary(data_dist))
+            'data distribution in database for dataset ' + str(self.set) + ':\n' + format_dictionary(self.data_dist))
 
         # apply balancing
         if self.balanced:
@@ -148,21 +152,12 @@ class TuebingenDataloader(tud.Dataset):
                     balancing_weights[n] = 0
             balancing_weights /= sum(balancing_weights)
 
-            # draw samples according to balancing weights
-            for n, z in enumerate(zip(self.stages, self.config.STAGES)):
-                stage_data, stage = z
-                if len(stage_data) == 0:
-                    continue
-                indices = np.r_[indices, np.random.choice(stage_data, size=int(
-                    self.nitems * balancing_weights[n]) + 1, replace=True)].astype('int')
-                data_dist[stage] = int(self.nitems * balancing_weights[n]) + 1
-            np.random.shuffle(indices)  # shuffle indices, otherwise they would be ordered by stage...
-        else:  # if 'balanced' is not set, all samples are loaded
-            for lab_data in self.labs:
-                indices = np.r_[indices, lab_data].astype('int')
-            indices = np.sort(indices)  # the samples are sorted by index for the creation of a transformation matrix
+        for lab in self.labs_and_stages:
+            for stage in self.labs_and_stages[lab]:
+                indices = np.r_[indices, self.labs_and_stages[lab][stage]].astype('int')
+        indices = np.sort(indices)  # the samples are sorted by index for the creation of a transformation matrix
 
-        logger.info('data distribution after processing:\n' + format_dictionary(data_dist))
+        logger.info('data distribution after processing:\n' + format_dictionary(self.data_dist))
 
         return indices
 
@@ -170,7 +165,7 @@ class TuebingenDataloader(tud.Dataset):
         """ reload indices, only relevant for balancing purposes, because the samples are redrawn """
         self.indices = self.get_indices()
     
-    def get_lab_data(self):
+    def get_lab_and_stage_data(self):
         """ load indices of samples in the pytables table for each lab
 
         if data_fraction is set, load only a random fraction of the indices
@@ -178,33 +173,40 @@ class TuebingenDataloader(tud.Dataset):
         Returns:
             list: list with entries for each lab containing lists with indices of samples in that lab
         """
-        labs = []
+        lab_and_stage_data = {}
         table = self.file.root['multiple_labs']
 
         if self.set != 'test':
             for lab in self.config.LABS:
                 if lab != self.test_lab:
-                    labs.append(table.get_where_list('({}=="{}")'.format(COLUMN_LAB, lab)))
+                    lab_and_stage_data[lab] = {}
+                    for stage in self.config.STAGES:
+                        lab_and_stage_data[lab][stage] = table.get_where_list('({}=="{}") & ({}=="{}")'.format(COLUMN_LAB, lab, COLUMN_LABEL, stage))
+                        if lab_and_stage_data[lab][stage].size > 0:
+                            if max(lab_and_stage_data[lab][stage]) > self.max_idx:
+                                self.max_idx = max(lab_and_stage_data[lab][stage])
         else:
             labs.append(table.get_where_list('({}=="{}")'.format(COLUMN_LAB, self.test_lab)))
 
-        self.max_idx = max([max(l) for l in labs if len(l)>0])
-
         if self.config.DATA_FRACTION == True and self.set != 'test':
-            reduced_labs = []
-            num_samples = int(self.config.ORIGINAL_DATASET_SIZE / len(labs))
+            num_samples_per_lab = int(self.config.ORIGINAL_DATASET_SIZE / len(lab_and_stage_data))
 
-            for l in labs:
-                if l.size > num_samples:
-                    l_downsampled = np.random.choice(l, size=num_samples, replace=False)
-                    reduced_labs.append(l_downsampled)
-                else:
-                    l_upsampled = np.random.choice(l, size=num_samples, replace=True)
-                    reduced_labs.append(l_upsampled)
+            for l in lab_and_stage_data:
+                l_size = sum([s.size for s in lab_and_stage_data[l].values()])
 
-            labs = reduced_labs
+                for s in lab_and_stage_data[l]:
+                    lab_stage_size = lab_and_stage_data[l][s].size
+                    stage_ratio = lab_stage_size / l_size
 
-        return labs
+                    if lab_stage_size > num_samples_per_lab*stage_ratio:
+                        l_downsampled = np.random.choice(lab_and_stage_data[l][s], size=int(num_samples_per_lab*stage_ratio), replace=False)
+                        lab_and_stage_data[l][s] = l_downsampled
+                    else:
+                        # l_upsampled = np.random.choice(l, size=num_samples, replace=False)
+                        l_upsampled = np.random.choice(lab_and_stage_data[l][s], size=int(num_samples_per_lab*stage_ratio), replace=True)
+                        lab_and_stage_data[l][s] = l_upsampled
+
+        return lab_and_stage_data
     
 
 class TuebingenDataLoaderSet(TuebingenDataloader):
