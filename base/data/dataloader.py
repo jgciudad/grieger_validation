@@ -46,9 +46,9 @@ class TuebingenDataloader(tud.Dataset):
         self.indices = self.get_indices()
 
         if self.set == 'train':
-            idx = np.random.permutation(self.indices.size)
-            self.train_dataloader = TuebingenDataLoaderSet(indices=idx[:int(self.indices.size*0.8)], config=config, max_idx=self.max_idx, augment_data=self.augment_data)
-            self.val_dataloader = TuebingenDataLoaderSet(indices=idx[int(self.indices.size*0.8):], config=config, max_idx=self.max_idx, augment_data=self.augment_data)
+            shuffled_indices = np.random.permutation(self.indices)
+            self.train_dataloader = TuebingenDataLoaderSet(indices=np.sort(shuffled_indices[:int(self.indices.size*0.8)]), config=config, max_idx=self.max_idx, augment_data=self.augment_data, loss_weigths=self.loss_weights)
+            self.val_dataloader = TuebingenDataLoaderSet(indices=np.sort(shuffled_indices[int(self.indices.size*0.8):]), config=config, max_idx=self.max_idx, augment_data=self.augment_data)
 
         self.file.close()
 
