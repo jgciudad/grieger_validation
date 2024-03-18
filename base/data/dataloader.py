@@ -196,7 +196,12 @@ class TuebingenDataloader(tud.Dataset):
                             if max(lab_and_stage_data[lab][stage]) > self.max_idx:
                                 self.max_idx = max(lab_and_stage_data[lab][stage])
         else:
-            labs.append(table.get_where_list('({}=="{}")'.format(COLUMN_LAB, self.test_lab)))
+            lab_and_stage_data[self.test_lab] = {}
+            for stage in self.config.STAGES:
+                lab_and_stage_data[self.test_lab][stage] = table.get_where_list('({}=="{}") & ({}=="{}")'.format(COLUMN_LAB, self.test_lab, COLUMN_LABEL, stage))
+                if lab_and_stage_data[self.test_lab][stage].size > 0:
+                    if max(lab_and_stage_data[self.test_lab][stage]) > self.max_idx:
+                        self.max_idx = max(lab_and_stage_data[self.test_lab][stage])
 
         if self.config.DATA_FRACTION == True and self.set != 'test':
             num_samples_per_lab = int(self.config.ORIGINAL_DATASET_SIZE / len(lab_and_stage_data))
