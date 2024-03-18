@@ -36,7 +36,7 @@ def training(test_lab):
     result_logger = ResultLogger(config)  # wrapper for various methods to log/plot results
 
     # train dataloader with configured data augmentation and rebalancing
-    dl_train = TuebingenDataloader(config, 'train', test_lab, config.BALANCED_TRAINING, augment_data=False,
+    dl_train = TuebingenDataloader(config, 'train', test_lab, augment_data=False,
                                    data_fraction=config.DATA_FRACTION)
     # multithreaded pytorch dataloaders with 4 workers each, train data is shuffled
     trainloader = t_data.DataLoader(dl_train.train_dataloader, batch_size=config.BATCH_SIZE, shuffle=True, num_workers=4)
@@ -63,8 +63,6 @@ def training(test_lab):
     # iterate over EPOCHS, start with epoch 1
     for epoch in range(1, config.EPOCHS + 1):
         start = time.time()  # measure time each epoch takes
-        if epoch > 1:
-            dl_train.reset_indices()  # rebalance samples for each epoch
 
         # train epoch and save metrics
         labels_train, loss_train = train(config, epoch, model, optimizer, trainloader)

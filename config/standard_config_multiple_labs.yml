@@ -15,10 +15,8 @@ data:
 
 experiment:
   data:
-    file: 'multiple_labs.h5'  # stored in cache dir
-    stages: ['Wake', 'Non REM', 'REM', 'Art']
-    balanced_training: False
-    balancing_weights: [0.30, 0.18, 0.24, 0.14, 0.14]
+    # balanced_training: False
+    # balancing_weights: [0.30, 0.18, 0.24, 0.14, 0.14]
     channels_in_table: ['EEG1', 'EEG2', 'EEG3', 'EEG4', 'EMG']
     channels_in_model: ['EEG1']
     samples_left: 1

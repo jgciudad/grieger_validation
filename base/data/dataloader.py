@@ -141,17 +141,27 @@ class TuebingenDataloader(tud.Dataset):
         logger.info(
             'data distribution in database for dataset ' + str(self.set) + ':\n' + format_dictionary(self.data_dist))
 
-        # apply balancing
-        if self.balanced:
-            # the balancing weights are normed
-            # if a stage has no samples, the weight belonging to it is set to 0
-            balancing_weights = np.array(self.config.BALANCING_WEIGHTS, dtype='float')
-            for n, stage_data in enumerate(self.stages):
-                if len(stage_data) == 0:
-                    print('label ' + self.config.STAGES[n] + ' has zero samples')
-                    balancing_weights[n] = 0
-            balancing_weights /= sum(balancing_weights)
+        # # apply balancing
+        # if self.balanced:
+        #     # the balancing weights are normed
+        #     # if a stage has no samples, the weight belonging to it is set to 0
+        #     balancing_weights = np.array(self.config.BALANCING_WEIGHTS, dtype='float')
+        #     for n, stage_data in enumerate(self.stages):
+        #         if len(stage_data) == 0:
+        #             print('label ' + self.config.STAGES[n] + ' has zero samples')
+        #             balancing_weights[n] = 0
+        #     balancing_weights /= sum(balancing_weights)
 
+        #     # draw samples according to balancing weights
+        #     for n, z in enumerate(zip(self.stages, self.config.STAGES)):
+        #         stage_data, stage = z
+        #         if len(stage_data) == 0:
+        #             continue
+        #         indices = np.r_[indices, np.random.choice(stage_data, size=int(
+        #             self.nitems * balancing_weights[n]) + 1, replace=True)].astype('int')
+        #         self.data_dist[stage] = int(self.nitems * balancing_weights[n]) + 1
+        #     np.random.shuffle(indices)  # shuffle indices, otherwise they would be ordered by stage...
+        # else:  # if 'balanced' is not set, all samples are loaded
         for lab in self.labs_and_stages:
             for stage in self.labs_and_stages[lab]:
                 indices = np.r_[indices, self.labs_and_stages[lab][stage]].astype('int')

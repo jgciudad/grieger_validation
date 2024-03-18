@@ -76,10 +76,10 @@ class ConfigLoader:
         data_config = exp_config['data']
         self.DATA_FILE = join(cache_dir, data_config['file'])
         self.STAGES = data_config['stages']
-        self.BALANCED_TRAINING = data_config['balanced_training']
-        assert type(self.BALANCED_TRAINING) is bool
-        self.BALANCING_WEIGHTS = data_config['balancing_weights']
-        assert np.all([w >= 0 for w in self.BALANCING_WEIGHTS]), 'BALANCING_WEIGHTS must be non negative'
+        # self.BALANCED_TRAINING = data_config['balanced_training']
+        # assert type(self.BALANCED_TRAINING) is bool
+        # self.BALANCING_WEIGHTS = data_config['balancing_weights']
+        # assert np.all([w >= 0 for w in self.BALANCING_WEIGHTS]), 'BALANCING_WEIGHTS must be non negative'
         self.CHANNELS_IN_MODEL = data_config['channels_in_model']
         self.CHANNELS_IN_TABLE = data_config['channels_in_table']
         self.LABS_CHANNELS = data_config['labs_channels']
