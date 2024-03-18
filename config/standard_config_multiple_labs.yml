@@ -43,8 +43,8 @@ experiment:
         EEG2: 1
         EMG: 2
       Sebastian:
-        EEG1': 1
-        EEG2': 2
+        EEG1: 1
+        EEG2: 2
         EMG: 0
 
   training:
