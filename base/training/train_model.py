@@ -11,7 +11,7 @@ from base.training.scheduled_optim import ScheduledOptim
 logger = logging.getLogger('tuebingen')
 
 
-def train(config, epoch, model, optimizer, trainloader):
+def train(config, epoch, model, optimizer, trainloader, loss_weigths=None):
     """train `model` using the data from `trainloader`
 
     Args:
@@ -33,7 +33,7 @@ def train(config, epoch, model, optimizer, trainloader):
 
     for i, data in enumerate(trainloader, 0):
         # get the inputs; data is a list of [inputs, labels]
-        features, labels = data
+        features, labels, labs = data
         features = features.to(config.DEVICE)
         labels = labels.long().to(config.DEVICE)
 
@@ -42,8 +42,21 @@ def train(config, epoch, model, optimizer, trainloader):
 
         outputs = model(features)
 
-        criterion = nn.NLLLoss()
+        weights_mask = torch.zeros(labels.size())
+        if config.DATA_FRACTION == True:
+            for s in config.STAGES[:len(config.STAGES)-int(config.MASK_ARTIFACTS)]: # does not iterate over last stage (artifacts) if config.MASK_ARTIFACTS=True
+                weights_mask[labels == config.STAGES.index(s)] = loss_weigths[s]
+        else:
+            for s in config.STAGES[:len(config.STAGES)-int(config.MASK_ARTIFACTS)]: # does not iterate over last stage (artifacts) if config.MASK_ARTIFACTS=True
+                for l in labs.unique().tolist():
+                    weights_mask[(labels == config.STAGES.index(s)) & (labs == l)] = loss_weigths[config.LABS[l]][s]
+
+        criterion = nn.NLLLoss(reduction='none')
         loss = criterion(outputs, labels)
+
+        weighted_loss = weights_mask.to(config.DEVICE) * loss
+
+        loss = torch.sum(weighted_loss) / (labels.size()[0] - (labels==config.STAGES.index('Art')).sum())
 
         # L1 regularization
         reg_loss = 0

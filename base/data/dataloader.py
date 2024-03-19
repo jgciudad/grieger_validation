@@ -44,6 +44,7 @@ class TuebingenDataloader(tud.Dataset):
         # max index is needed to calculate limits for the additional samples loaded by SAMPLES_LEFT and SAMPLES_RIGHT
         self.nitems = sum([sum([s.size for s in self.labs_and_stages[l].values()]) for l in self.labs_and_stages])
         self.indices = self.get_indices()
+        self.loss_weights = self.get_loss_weights()
 
         if self.set == 'train':
             shuffled_indices = np.random.permutation(self.indices)
@@ -99,10 +100,43 @@ class TuebingenDataloader(tud.Dataset):
             feature = self.data_augmentor.alternate_signals(feature, sample_left, sample_right)
 
         # transform the label to it's index in STAGES
-        return feature, self.config.STAGES.index(str(self.data[index][COLUMN_LABEL], 'utf-8'))
+        return feature, self.config.STAGES.index(str(self.data[index][COLUMN_LABEL], 'utf-8')), self.config.LABS.index(str(self.data[index][COLUMN_LAB], 'utf-8'))
 
     def __len__(self):
         return self.indices.size
+    
+    def get_loss_weights(self):
+        loss_weights = {}
+        
+        if self.config.MASK_ARTIFACTS == True:
+            lab_sizes = [sum(self.data_dist[lab].values()) - self.data_dist[lab]['Art'] for lab in self.data_dist] # discard artifacts from training sample size count
+
+            if self.config.DATA_FRACTION == False:
+                # weights for both sleep stages and labs
+
+                for lab in self.data_dist:
+                    loss_weights[lab] = {}
+
+                    for stage in self.config.STAGES:
+                        if stage != 'Art':
+                            loss_weights[lab][stage] = sum(lab_sizes) / len(self.data_dist) / (len(self.config.STAGES)-1) / self.data_dist[lab][stage] # -1 because not counting artifact class
+
+            else:
+                # weights only for sleep stages
+
+                for stage in self.config.STAGES:
+
+                    stage_counter = 0 # to sum epochs of each stage across labs
+
+                    if stage != 'Art':
+                        for lab in self.data_dist:
+                            stage_counter += self.data_dist[lab][stage]
+                        loss_weights[stage] = sum(lab_sizes) / (len(self.config.STAGES)-1) / stage_counter # -1 because not counting artifact class
+                
+        else:
+            raise Exception('Weighted loss with artifacts not implemented')
+        
+        return loss_weights
     
     def select_channels(self, index):
         lab = self.data[index]['lab']
@@ -226,7 +260,7 @@ class TuebingenDataloader(tud.Dataset):
 
 class TuebingenDataLoaderSet(TuebingenDataloader):
 
-    def __init__(self, indices, config, max_idx, augment_data):
+    def __init__(self, indices, config, max_idx, augment_data, loss_weigths=None):
         self.indices = indices
         self.config = config
         self.file = tables.open_file(self.config.DATA_FILE)
@@ -234,4 +268,5 @@ class TuebingenDataLoaderSet(TuebingenDataloader):
         self.data = None
         self.max_idx = max_idx
         self.augment_data = augment_data
+        self.loss_weights = loss_weigths
 

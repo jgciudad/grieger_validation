@@ -65,7 +65,7 @@ def training(test_lab):
         start = time.time()  # measure time each epoch takes
 
         # train epoch and save metrics
-        labels_train, loss_train = train(config, epoch, model, optimizer, trainloader)
+        labels_train, loss_train = train(config, epoch, model, optimizer, trainloader, loss_weigths=dl_train.loss_weights)
         losses['train'].append(loss_train)
 
         # evaluate epoch and save metrics
