@@ -67,7 +67,7 @@ def training():
             dl_train.reset_indices()  # rebalance samples for each epoch
 
         # train epoch and save metrics
-        labels_train, loss_train = train(config, epoch, model, optimizer, trainloader)
+        labels_train, loss_train = train(config, epoch, model, optimizer, trainloader, loss_weigths=dl_train.loss_weights)
         losses['train'].append(loss_train)
 
         # evaluate epoch and save metrics

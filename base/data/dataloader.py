@@ -42,6 +42,10 @@ class TuebingenDataloader(tud.Dataset):
         # max index is needed to calculate limits for the additional samples loaded by SAMPLES_LEFT and SAMPLES_RIGHT
         self.nitems = sum([len(s) for s in self.stages])
         self.indices = self.get_indices()
+        self.loss_weights = None
+        if balanced==False:
+            # we are using weighted loss when there is no rebalance of the classes
+            self.loss_weights = self.get_loss_weights()
         self.file.close()
 
     def __getitem__(self, index):
@@ -92,6 +96,15 @@ class TuebingenDataloader(tud.Dataset):
 
     def __len__(self):
         return self.nitems
+
+    def get_loss_weights(self):
+        loss_weights = {}
+        
+        for stage in self.config.STAGES:
+
+            loss_weights[stage] = self.nitems / (len(self.config.STAGES) * self.stages[self.config.STAGES.index(stage)].size) 
+                
+        return loss_weights
 
     def get_indices(self):
         """ loads indices of samples in the pytables table the dataloader returns
