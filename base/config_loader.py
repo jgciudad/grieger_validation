@@ -140,20 +140,6 @@ class ConfigLoader:
         except:
             assert False
 
-        # data augmentation
-        data_aug_config = exp_config['data_augmentation']
-        self.GAIN = data_aug_config['gain']
-        assert 0 <= self.GAIN <= 1, 'GAIN must be in [0,1]'
-        self.FLIP = data_aug_config['flip']
-        assert 0 <= self.FLIP <= 1, 'FLIP must be in [0,1]'
-        self.FLIP_ALL = data_aug_config['flip_all']
-        assert 0 <= self.FLIP_ALL <= 1, 'FLIP_ALL must be in [0,1]'
-        self.WINDOW_WARP_SIZE = data_aug_config['window_warp_size']
-        assert 0 <= self.WINDOW_WARP_SIZE <= 1, 'WINDOW_WARP_SIZE must be in [0,1]'
-        self.FLIP_HORI = data_aug_config['flip_hori']
-        assert 0 <= self.FLIP_HORI <= 1, 'FLIP_HORI must be in [0,1]'
-        self.TIME_SHIFT = data_aug_config['time_shift']
-        assert 0 <= self.TIME_SHIFT <= 1, 'TIME_SHIFT must be in [0,1]'
 
     def load_config(self):
         """loads config from standard_config.yml and updates it with <experiment>.yml"""

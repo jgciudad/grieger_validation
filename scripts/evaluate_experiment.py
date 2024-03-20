@@ -33,7 +33,7 @@ def evaluation():
     result_logger = ResultLogger(config)
 
     # create dataloader for given dataset, the data should not be altered in any way
-    map_loader = TuebingenDataloader(config, args.dataset, balanced=False, augment_data=False)
+    map_loader = TuebingenDataloader(config, args.dataset, balanced=False)
     dataloader = t_data.DataLoader(map_loader, batch_size=config.BATCH_SIZE_EVAL, shuffle=False, num_workers=4)
 
     # create empty model from model name in config and set it's state from best model in EXPERIMENT_DIR

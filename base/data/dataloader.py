@@ -6,7 +6,6 @@ import tables
 import torch.utils.data as tud
 
 from base.config_loader import ConfigLoader
-from base.data.data_augmentor import DataAugmentor
 from base.data.data_table import COLUMN_MOUSE_ID, COLUMN_LABEL, COLUMN_LAB
 from base.utilities import format_dictionary
 
@@ -20,21 +19,18 @@ class TuebingenDataloader(tud.Dataset):
     Each row in the table contains the data and label for one sample, without SAMPLES_LEFT and SAMPLES_RIGHT. This
     means, that every sample can be identified by it's index in the table, which is used during rebalancing. """
 
-    def __init__(self, config, set, test_lab, balanced=False, augment_data=False, data_fraction=False):
+    def __init__(self, config, set, test_lab, balanced=False, data_fraction=False):
         """
         Args:
              config (ConfigLoader): config of the running experiment
              dataset (str): dataset from which to load data, must be a table in the pytables file
              balanced (bool): flag, whether the loaded data should be rebalanced by using BALANCING_WEIGHTS
-             augment_data (bool): flag, whether the data is to be augmented, see `DataAugmentor`
         """
         self.config = config
-        self.augment_data = augment_data
         self.set = set
         self.balanced = balanced
         self.data_fraction = data_fraction
         self.data = None
-        self.data_augmentor = DataAugmentor(config)
         self.max_idx = 0
         self.test_lab = test_lab
 
@@ -48,8 +44,8 @@ class TuebingenDataloader(tud.Dataset):
 
         if self.set == 'train':
             shuffled_indices = np.random.permutation(self.indices)
-            self.train_dataloader = TuebingenDataLoaderSet(indices=np.sort(shuffled_indices[:int(self.indices.size*0.8)]), config=config, max_idx=self.max_idx, augment_data=self.augment_data, loss_weigths=self.loss_weights)
-            self.val_dataloader = TuebingenDataLoaderSet(indices=np.sort(shuffled_indices[int(self.indices.size*0.8):]), config=config, max_idx=self.max_idx, augment_data=self.augment_data)
+            self.train_dataloader = TuebingenDataLoaderSet(indices=np.sort(shuffled_indices[:int(self.indices.size*0.8)]), config=config, max_idx=self.max_idx, loss_weigths=self.loss_weights)
+            self.val_dataloader = TuebingenDataLoaderSet(indices=np.sort(shuffled_indices[int(self.indices.size*0.8):]), config=config, max_idx=self.max_idx)
 
         self.file.close()
 
@@ -93,11 +89,6 @@ class TuebingenDataloader(tud.Dataset):
         rows = self.data[idx_from + 1:idx_to]
         feature = np.c_[[rows[c].flatten() for c in channels_to_load]]
 
-        # load samples to the left and right and use them for data augmentation
-        if self.augment_data:
-            sample_left = np.c_[[self.data[idx_from][c].flatten() for c in channels_to_load]]
-            sample_right = np.c_[[self.data[idx_to][c].flatten() for c in channels_to_load]]
-            feature = self.data_augmentor.alternate_signals(feature, sample_left, sample_right)
 
         # transform the label to it's index in STAGES
         return feature, self.config.STAGES.index(str(self.data[index][COLUMN_LABEL], 'utf-8')), self.config.LABS.index(str(self.data[index][COLUMN_LAB], 'utf-8'))
@@ -260,13 +251,12 @@ class TuebingenDataloader(tud.Dataset):
 
 class TuebingenDataLoaderSet(TuebingenDataloader):
 
-    def __init__(self, indices, config, max_idx, augment_data, loss_weigths=None):
+    def __init__(self, indices, config, max_idx, loss_weigths=None):
         self.indices = indices
         self.config = config
         self.file = tables.open_file(self.config.DATA_FILE)
         self.file.close()
         self.data = None
         self.max_idx = max_idx
-        self.augment_data = augment_data
         self.loss_weights = loss_weigths
 

@@ -36,7 +36,7 @@ def training(test_lab):
     result_logger = ResultLogger(config)  # wrapper for various methods to log/plot results
 
     # train dataloader with configured data augmentation and rebalancing
-    dl_train = TuebingenDataloader(config, 'train', test_lab, augment_data=False,
+    dl_train = TuebingenDataloader(config, 'train', test_lab,
                                    data_fraction=config.DATA_FRACTION)
     # multithreaded pytorch dataloaders with 4 workers each, train data is shuffled
     trainloader = t_data.DataLoader(dl_train.train_dataloader, batch_size=config.BATCH_SIZE, shuffle=True, num_workers=4)
