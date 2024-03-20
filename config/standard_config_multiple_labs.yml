@@ -4,7 +4,7 @@ general:
   device: 'cpu'
 
 dirs:
-  cache: './cache/dataset'  # directory for cached files like the tranformed data file (see experiment.data.file)
+  cache: '/home/s202283/code/grieger_validation/cache/dataset'  # directory for cached files like the tranformed data file (see experiment.data.file)
   data: '/Users/tlj258/small_dataset_validation/'  # directory containing data
 
 data:
@@ -54,7 +54,7 @@ experiment:
     log_interval: 10  # in percent
     additional_model_safe: false
     batch_size: 256
-    data_fraction: True
+    data_fraction: True # True if keeping sample size from original model
     # data_fraction_strat: 'uniform'
     epochs: 50
     optimizer:
