@@ -59,9 +59,16 @@ class TuebingenDataloader(tud.Dataset):
         # load internal index for rebalancing purposes, see get_indices()
         index = self.indices[index]
 
-        # load one additional sample to each side for window warping and time shift
-        left = self.config.SAMPLES_LEFT + 1
-        right = self.config.SAMPLES_RIGHT + 1
+        # check that neighbors are within limits
+        if isinstance(self.config.SAMPLES_LEFT, int) and isinstance(self.config.SAMPLES_RIGHT, int):
+            left = int(self.config.SAMPLES_LEFT)
+            right = int(self.config.SAMPLES_RIGHT)
+        else:
+            # load one additional sample to each side if decimal number of neigbors
+            left = int(self.config.SAMPLES_LEFT) + 1
+            right = int(self.config.SAMPLES_RIGHT) + 1
+            left_rest = self.config.SAMPLES_LEFT % 1
+            right_rest = self.config.SAMPLES_RIGHT % 1
         # calculate start and end to prevent IndexErrors
         idx_from = 0 if index - left < 0 else index - left
         idx_to = idx_from + left + right
@@ -85,10 +92,13 @@ class TuebingenDataloader(tud.Dataset):
         # sample EEG channels if the model takes as input less EEG channels than available
         channels_to_load = self.select_channels(index)
 
-        # load only the data specified by SAMPLES_LEFT and SAMPLES_RIGHT w/o the samples for window warping
-        rows = self.data[idx_from + 1:idx_to]
+        # load the data specified by SAMPLES_LEFT and SAMPLES_RIGHT
+        rows = self.data[idx_from:idx_to+1]
         feature = np.c_[[rows[c].flatten() for c in channels_to_load]]
 
+        # crop edges if number of neighbors is a float
+        if isinstance(self.config.SAMPLES_LEFT, float) and isinstance(self.config.SAMPLES_RIGHT, float):
+            feature = feature[:, int(self.config.SAMPLING_RATE*self.config.SAMPLE_DURATION*(1-left_rest)) : -int(self.config.SAMPLING_RATE*self.config.SAMPLE_DURATION*(1-right_rest))]
 
         # transform the label to it's index in STAGES
         return feature, self.config.STAGES.index(str(self.data[index][COLUMN_LABEL], 'utf-8')), self.config.LABS.index(str(self.data[index][COLUMN_LAB], 'utf-8'))

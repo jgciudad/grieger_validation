@@ -17,14 +17,15 @@ data:
 
 experiment:
   data:
+    file: 'multiple_labs.h5'  # stored in cache dir
     stages: ['Wake', 'Non REM', 'REM', 'Art'] # Artifacts must always be the last class
     mask_artifacts: True
     # balanced_training: False
     # balancing_weights: [0.30, 0.18, 0.24, 0.14, 0.14]
     channels_in_table: ['EEG1', 'EEG2', 'EEG3', 'EEG4', 'EMG']
     channels_in_model: ['EEG1']
-    samples_left: 1
-    samples_right: 1
+    samples_left: 3.25
+    samples_right: 3.25
     original_dataset_size: 366122 # rebalanced dataset #2 (see table 2 of Grieger)
     labs: ['Antoine', 'Kornum', 'Alessandro', 'Sebastian', 'Maiken']
     labs_channels: 

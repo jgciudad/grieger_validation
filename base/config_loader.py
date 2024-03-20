@@ -85,9 +85,9 @@ class ConfigLoader:
         self.CHANNELS_IN_TABLE = data_config['channels_in_table']
         self.LABS_CHANNELS = data_config['labs_channels']
         self.SAMPLES_LEFT = data_config['samples_left']
-        assert type(self.SAMPLES_LEFT) is int
+        # assert type(self.SAMPLES_LEFT) is int
         self.SAMPLES_RIGHT = data_config['samples_right']
-        assert type(self.SAMPLES_RIGHT) is int
+        # assert type(self.SAMPLES_RIGHT) is int
         self.LABS = data_config['labs']
         self.ORIGINAL_DATASET_SIZE = data_config['original_dataset_size']
 
