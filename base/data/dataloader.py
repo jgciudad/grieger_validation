@@ -252,7 +252,6 @@ class TuebingenDataloader(tud.Dataset):
                         l_downsampled = np.random.choice(lab_and_stage_data[l][s], size=int(num_samples_per_lab*stage_ratio), replace=False)
                         lab_and_stage_data[l][s] = l_downsampled
                     else:
-                        # l_upsampled = np.random.choice(l, size=num_samples, replace=False)
                         l_upsampled = np.random.choice(lab_and_stage_data[l][s], size=int(num_samples_per_lab*stage_ratio), replace=True)
                         lab_and_stage_data[l][s] = l_upsampled
 
