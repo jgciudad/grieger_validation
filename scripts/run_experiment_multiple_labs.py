@@ -127,7 +127,7 @@ def training(test_lab):
 
 if __name__ == '__main__':
     args = parse()
-    config = ConfigLoader(args.experiment, args.test_lab)  # load config from experiment
+    config = ConfigLoader(args.experiment)  # load config from experiment
 
     logger = Logger(config)  # create wrapper for logger
     # create log_file and initialize it with the script arguments and the config
