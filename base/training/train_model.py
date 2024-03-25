@@ -44,10 +44,10 @@ def train(config, epoch, model, optimizer, trainloader, loss_weigths=None):
 
         weights_mask = torch.zeros(labels.size())
         if config.DATA_FRACTION == True:
-            for s in config.STAGES[:len(config.STAGES)-int(config.MASK_ARTIFACTS)]: # does not iterate over last stage (artifacts) if config.MASK_ARTIFACTS=True
+            for s in config.STAGES:
                 weights_mask[labels == config.STAGES.index(s)] = loss_weigths[s]
         else:
-            for s in config.STAGES[:len(config.STAGES)-int(config.MASK_ARTIFACTS)]: # does not iterate over last stage (artifacts) if config.MASK_ARTIFACTS=True
+            for s in config.STAGES:
                 for l in labs.unique().tolist():
                     weights_mask[(labels == config.STAGES.index(s)) & (labs == l)] = loss_weigths[config.LABS[l]][s]
 
@@ -56,7 +56,7 @@ def train(config, epoch, model, optimizer, trainloader, loss_weigths=None):
 
         weighted_loss = weights_mask.to(config.DEVICE) * loss
 
-        loss = torch.sum(weighted_loss) / (labels.size()[0] - (labels==config.STAGES.index('Art')).sum())
+        loss = torch.sum(weighted_loss) / (labels.size()[0])
 
         # L1 regularization
         reg_loss = 0

@@ -76,7 +76,7 @@ class ConfigLoader:
         data_config = exp_config['data']
         self.DATA_FILE = join(cache_dir, data_config['file'])
         self.STAGES = data_config['stages']
-        self.MASK_ARTIFACTS = data_config['mask_artifacts']
+        # self.MASK_ARTIFACTS = data_config['mask_artifacts']
         # self.BALANCED_TRAINING = data_config['balanced_training']
         # assert type(self.BALANCED_TRAINING) is bool
         # self.BALANCING_WEIGHTS = data_config['balancing_weights']
