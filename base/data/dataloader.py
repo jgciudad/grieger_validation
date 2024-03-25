@@ -37,15 +37,17 @@ class TuebingenDataloader(tud.Dataset):
         # file has to be opened here, so the indices for each stage can be loaded
         self.file = tables.open_file(self.config.DATA_FILE)
         self.labs_and_stages = self.get_lab_and_stage_data()
-        # max index is needed to calculate limits for the additional samples loaded by SAMPLES_LEFT and SAMPLES_RIGHT
-        self.nitems = sum([sum([s.size for s in self.labs_and_stages[l].values()]) for l in self.labs_and_stages])
-        self.indices = self.get_indices()
-        self.loss_weights = self.get_loss_weights()
 
         if self.set == 'train':
-            shuffled_indices = np.random.permutation(self.indices)
-            self.train_dataloader = TuebingenDataLoaderSet(indices=np.sort(shuffled_indices[:int(self.indices.size*0.8)]), config=config, max_idx=self.max_idx, loss_weigths=self.loss_weights)
-            self.val_dataloader = TuebingenDataLoaderSet(indices=np.sort(shuffled_indices[int(self.indices.size*0.8):]), config=config, max_idx=self.max_idx)
+            self.train_validation_split()
+            self.train_indices, self.train_dist = self.get_indices(self.labs_and_stages_train)
+            self.val_indices, self.val_dist = self.get_indices(self.labs_and_stages_val)
+            self.loss_weights = self.get_loss_weights()
+
+            self.train_dataloader = TuebingenDataLoaderSet(indices=self.train_indices, config=config, max_idx=self.max_idx, loss_weigths=self.loss_weights)
+            self.val_dataloader = TuebingenDataLoaderSet(indices=self.val_indices, config=config, max_idx=self.max_idx)
+        else:
+            self.indices, _ = self.get_indices(self.labs_and_stages)
 
         self.file.close()
 
@@ -109,33 +111,28 @@ class TuebingenDataloader(tud.Dataset):
     def get_loss_weights(self):
         loss_weights = {}
         
-        if self.config.MASK_ARTIFACTS == True:
-            lab_sizes = [sum(self.data_dist[lab].values()) - self.data_dist[lab]['Art'] for lab in self.data_dist] # discard artifacts from training sample size count
+        lab_sizes = [sum(self.train_dist[lab].values()) for lab in self.train_dist]
 
-            if self.config.DATA_FRACTION == False:
-                # weights for both sleep stages and labs
+        if self.config.DATA_FRACTION == False:
+            # weights for both sleep stages and labs
 
-                for lab in self.data_dist:
-                    loss_weights[lab] = {}
-
-                    for stage in self.config.STAGES:
-                        if stage != 'Art':
-                            loss_weights[lab][stage] = sum(lab_sizes) / len(self.data_dist) / (len(self.config.STAGES)-1) / self.data_dist[lab][stage] # -1 because not counting artifact class
-
-            else:
-                # weights only for sleep stages
+            for lab in self.train_dist:
+                loss_weights[lab] = {}
 
                 for stage in self.config.STAGES:
+                    loss_weights[lab][stage] = sum(lab_sizes) / len(self.train_dist) / (len(self.config.STAGES)) / self.train_dist[lab][stage]
 
-                    stage_counter = 0 # to sum epochs of each stage across labs
-
-                    if stage != 'Art':
-                        for lab in self.data_dist:
-                            stage_counter += self.data_dist[lab][stage]
-                        loss_weights[stage] = sum(lab_sizes) / (len(self.config.STAGES)-1) / stage_counter # -1 because not counting artifact class
-                
         else:
-            raise Exception('Weighted loss with artifacts not implemented')
+            # weights only for sleep stages
+
+            for stage in self.config.STAGES:
+
+                stage_counter = 0 # to sum epochs of each stage across labs
+
+                for lab in self.train_dist:
+                    stage_counter += self.train_dist[lab][stage]
+                loss_weights[stage] = sum(lab_sizes) / (len(self.config.STAGES)) / stage_counter
+                
         
         return loss_weights
     
@@ -159,7 +156,7 @@ class TuebingenDataloader(tud.Dataset):
         
         return channels_to_load
 
-    def get_indices(self):
+    def get_indices(self, labs_and_stages_set):
         """ loads indices of samples in the pytables table the dataloader returns
 
         if flag `balanced` is set, rebalancing is done here by randomly drawing samples from all samples in a stage
@@ -168,13 +165,13 @@ class TuebingenDataloader(tud.Dataset):
         drawing of the samples is done with replacement, so samples can occur more than once in the dataloader """
         indices = np.empty(0)
         
-        self.data_dist = {}
-        for lab in self.labs_and_stages:
-            self.data_dist[lab] = {}
-            for stage in self.labs_and_stages[lab]:
-                self.data_dist[lab][stage] = self.labs_and_stages[lab][stage].size
+        data_dist = {}
+        for lab in labs_and_stages_set:
+            data_dist[lab] = {}
+            for stage in labs_and_stages_set[lab]:
+                data_dist[lab][stage] = labs_and_stages_set[lab][stage].size
         logger.info(
-            'data distribution in database for dataset ' + str(self.set) + ':\n' + format_dictionary(self.data_dist))
+            'data distribution in database for dataset ' + str(self.set) + ':\n' + format_dictionary(data_dist))
 
         # # apply balancing
         # if self.balanced:
@@ -197,14 +194,14 @@ class TuebingenDataloader(tud.Dataset):
         #         self.data_dist[stage] = int(self.nitems * balancing_weights[n]) + 1
         #     np.random.shuffle(indices)  # shuffle indices, otherwise they would be ordered by stage...
         # else:  # if 'balanced' is not set, all samples are loaded
-        for lab in self.labs_and_stages:
-            for stage in self.labs_and_stages[lab]:
-                indices = np.r_[indices, self.labs_and_stages[lab][stage]].astype('int')
+        for lab in labs_and_stages_set:
+            for stage in labs_and_stages_set[lab]:
+                indices = np.r_[indices, labs_and_stages_set[lab][stage]].astype('int')
         indices = np.sort(indices)  # the samples are sorted by index for the creation of a transformation matrix
 
-        logger.info('data distribution after processing:\n' + format_dictionary(self.data_dist))
+        logger.info('data distribution after processing:\n' + format_dictionary(data_dist))
 
-        return indices
+        return indices, data_dist
 
     def reset_indices(self):
         """ reload indices, only relevant for balancing purposes, because the samples are redrawn """
@@ -238,24 +235,52 @@ class TuebingenDataloader(tud.Dataset):
                     if max(lab_and_stage_data[self.test_lab][stage]) > self.max_idx:
                         self.max_idx = max(lab_and_stage_data[self.test_lab][stage])
 
-        if self.config.DATA_FRACTION == True and self.set != 'test':
-            num_samples_per_lab = int(self.config.ORIGINAL_DATASET_SIZE / len(lab_and_stage_data))
-
-            for l in lab_and_stage_data:
-                l_size = sum([s.size for s in lab_and_stage_data[l].values()])
-
-                for s in lab_and_stage_data[l]:
-                    lab_stage_size = lab_and_stage_data[l][s].size
-                    stage_ratio = lab_stage_size / l_size
-
-                    if lab_stage_size > num_samples_per_lab*stage_ratio:
-                        l_downsampled = np.random.choice(lab_and_stage_data[l][s], size=int(num_samples_per_lab*stage_ratio), replace=False)
-                        lab_and_stage_data[l][s] = l_downsampled
-                    else:
-                        l_upsampled = np.random.choice(lab_and_stage_data[l][s], size=int(num_samples_per_lab*stage_ratio), replace=True)
-                        lab_and_stage_data[l][s] = l_upsampled
-
         return lab_and_stage_data
+    
+    def train_validation_split(self):
+        self.labs_and_stages_train = {}
+        self.labs_and_stages_val = {}
+
+        if self.config.DATA_FRACTION == True:
+            num_samples_per_lab_train = int(self.config.ORIGINAL_DATASET_SIZE / len(self.labs_and_stages))
+            num_samples_per_lab_val = int(num_samples_per_lab_train * self.config.VALIDATION_SPLIT)
+
+            for lab in self.labs_and_stages:
+                self.labs_and_stages_train[lab] = {}
+                self.labs_and_stages_val[lab] = {}
+                l_size = sum([s.size for s in self.labs_and_stages[lab].values()])
+
+                for stage in self.labs_and_stages[lab]:
+                    lab_stage_size = self.labs_and_stages[lab][stage].size
+                    stage_ratio = lab_stage_size / l_size
+                    
+                    shuffled_indexes = np.random.permutation(self.labs_and_stages[lab][stage])
+                    self.labs_and_stages_train[lab][stage] = np.sort(shuffled_indexes[:-int(num_samples_per_lab_val*stage_ratio)])
+                    self.labs_and_stages_val[lab][stage] = np.sort(shuffled_indexes[-int(num_samples_per_lab_val*stage_ratio):])
+
+                    train_lab_stage_size = self.labs_and_stages_train[lab][stage].size
+
+                    if train_lab_stage_size > num_samples_per_lab_train*stage_ratio:
+                        l_downsampled = np.random.choice(self.labs_and_stages_train[lab][stage], size=int(num_samples_per_lab_train*stage_ratio), replace=False)
+                        self.labs_and_stages_train[lab][stage] = l_downsampled
+                    else:
+                        l_upsampled = np.random.choice(self.labs_and_stages_train[lab][stage], size=int(num_samples_per_lab_train*stage_ratio), replace=True)
+                        self.labs_and_stages_train[lab][stage] = l_upsampled
+
+        else:
+
+            for lab in self.labs_and_stages:
+                self.labs_and_stages_train[lab] = {}
+                self.labs_and_stages_val[lab] = {}
+
+                for stage in self.labs_and_stages[lab]:
+                    lab_stage_size = self.labs_and_stages[lab][stage].size
+                    
+                    shuffled_indexes = np.random.permutation(self.labs_and_stages[lab][stage])
+                    self.labs_and_stages_train[lab][stage] = np.sort(shuffled_indexes[:-int(lab_stage_size * self.config.VALIDATION_SPLIT)])
+                    self.labs_and_stages_val[lab][stage] = np.sort(shuffled_indexes[-int(lab_stage_size * self.config.VALIDATION_SPLIT):])
+
+
     
 
 class TuebingenDataLoaderSet(TuebingenDataloader):

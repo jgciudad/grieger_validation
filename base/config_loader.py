@@ -90,6 +90,7 @@ class ConfigLoader:
         # assert type(self.SAMPLES_RIGHT) is int
         self.LABS = data_config['labs']
         self.ORIGINAL_DATASET_SIZE = data_config['original_dataset_size']
+        self.VALIDATION_SPLIT = data_config['validation_split']
 
         # training
         training_config = exp_config['training']
