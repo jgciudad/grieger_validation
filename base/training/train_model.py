@@ -36,6 +36,7 @@ def train(config, epoch, model, optimizer, trainloader, loss_weigths=None):
         features, labels, labs = data
         features = features.to(config.DEVICE)
         labels = labels.long().to(config.DEVICE)
+        labs = labs.long().to(config.DEVICE)
 
         # zero the parameter gradients
         optimizer.zero_grad()
