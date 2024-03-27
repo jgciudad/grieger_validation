@@ -24,7 +24,7 @@ def evaluate(config: ConfigLoader, model, validationloader):
 
     with torch.no_grad():
         for data in validationloader:
-            features, labels = data
+            features, labels, labs = data
             features = features.to(config.DEVICE)
             labels = labels.long().to(config.DEVICE)
 
