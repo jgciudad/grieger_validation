@@ -4,8 +4,8 @@ import argparse
 import sys
 import time
 from importlib import import_module
-from os.path import basename, realpath, join, dirname
-
+import os
+from os.path import basename, realpath, join, dirname, exists
 import torch.utils.data as t_data
 from sklearn.metrics import f1_score
 
@@ -25,8 +25,10 @@ def parse():
     parser = argparse.ArgumentParser(description='training script')
     parser.add_argument('--experiment', '-e', required=True,
                         help='name of experiment to run')
-    parser.add_argument('--test_lab', '-e', required=True,
+    parser.add_argument('--test_lab', '-t', required=True,
                         help="lab to test the model on: 'Antoine', 'Kornum', 'Alessandro', 'Sebastian' or 'Maiken'")
+    parser.add_argument('--save_dir', '-s', required=True,
+                        help="path to save model'")
 
     return parser.parse_args()
 
@@ -127,7 +129,9 @@ def training(test_lab):
 
 if __name__ == '__main__':
     args = parse()
-    config = ConfigLoader(args.experiment)  # load config from experiment
+    if not os.path.exists(os.path.join(args.save_dir, args.test_lab)):
+        os.makedirs(os.path.join(args.save_dir, args.test_lab))
+    config = ConfigLoader(save_dir=os.path.join(args.save_dir, args.test_lab), experiment=args.experiment)  # load config from experiment
 
     logger = Logger(config)  # create wrapper for logger
     # create log_file and initialize it with the script arguments and the config
