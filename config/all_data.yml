@@ -1,0 +1,3 @@
+experiment:
+  training:
+    data_fraction: False # True if keeping sample size from original model
