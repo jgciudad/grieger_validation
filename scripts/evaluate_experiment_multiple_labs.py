@@ -4,7 +4,7 @@ import argparse
 import sys
 from importlib import import_module
 from os.path import basename, join, dirname, realpath, isfile
-
+import os
 import torch
 import torch.utils.data as t_data
 
@@ -21,19 +21,22 @@ def parse():
     parser = argparse.ArgumentParser(description='evaluate exp')
     parser.add_argument('--experiment', '-e', required=True,
                         help='name of experiment to run')
-    parser.add_argument('--dataset', '-d', default='valid',
-                        help='dataset to evaluate model on')
+    parser.add_argument('--test_lab', '-t', required=True,
+                        help="lab to test the model on: 'Antoine', 'Kornum', 'Alessandro', 'Sebastian' or 'Maiken'")
+    parser.add_argument('--save_dir', '-s', required=True,
+                        help="path to save model'")
 
     return parser.parse_args()
 
 
-def evaluation():
+def evaluation(test_lab):
     """evaluates best model in experiment on given dataset"""
     logger.fancy_log('start evaluation')
     result_logger = ResultLogger(config)
 
     # create dataloader for given dataset, the data should not be altered in any way
-    map_loader = TuebingenDataloader(config, args.dataset, balanced=False)
+    map_loader = TuebingenDataloader(config, 'test', test_lab,
+                                   data_fraction=config.DATA_FRACTION)
     dataloader = t_data.DataLoader(map_loader, batch_size=config.BATCH_SIZE_EVAL, shuffle=False, num_workers=4)
 
     # create empty model from model name in config and set it's state from best model in EXPERIMENT_DIR
@@ -60,11 +63,11 @@ def evaluation():
 
 if __name__ == '__main__':
     args = parse()
-    config = ConfigLoader(args.experiment)
+    config = ConfigLoader(save_dir=os.path.join(args.save_dir, args.test_lab), experiment=args.experiment)
 
     logger = Logger(config)  # wrapper for logger
     logger.init_log_file(args, basename(__file__))  # create log file and log config, etc
 
-    logger.fancy_log('evaluate best model of experiment {} on dataset {}'.format(args.experiment, args.dataset))
+    logger.fancy_log('evaluate best model of experiment {} on dataset {}'.format(args.experiment, args.test_lab))
     # perform evaluation
-    evaluation()
+    evaluation(test_lab=args.test_lab)
