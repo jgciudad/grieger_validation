@@ -1,11 +1,11 @@
 # this is equivalent to standard_config + exp002 (the experiment used in their publication)
 
 general:
-  device: 'cpu'
+  device: 'cuda'
 
 dirs:
   cache: '/home/s202283/code/grieger_validation/cache/dataset'  # directory for cached files like the tranformed data file (see experiment.data.file)
-  data: '/Users/tlj258/small_dataset_validation/'  # directory containing data
+  data: '/scratch/s202283/data/grieger_validation/'  # directory containing data
 
 data:
   sample_duration: 4  # seconds
@@ -26,6 +26,7 @@ experiment:
     channels_in_model: ['EEG1']
     samples_left: 3.25
     samples_right: 3.25
+    original_dataset_size: 366122 # rebalanced dataset #2 (see table 2 of Grieger)
     validation_split: 0.2
     labs: ['Antoine', 'Kornum', 'Alessandro', 'Sebastian', 'Maiken']
     labs_channels: 
