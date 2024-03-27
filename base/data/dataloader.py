@@ -19,7 +19,7 @@ class TuebingenDataloader(tud.Dataset):
     Each row in the table contains the data and label for one sample, without SAMPLES_LEFT and SAMPLES_RIGHT. This
     means, that every sample can be identified by it's index in the table, which is used during rebalancing. """
 
-    def __init__(self, config, set, test_lab, balanced=False, data_fraction=False):
+    def __init__(self, config, data_split, test_lab, balanced=False, data_fraction=False):
         """
         Args:
              config (ConfigLoader): config of the running experiment
@@ -27,7 +27,7 @@ class TuebingenDataloader(tud.Dataset):
              balanced (bool): flag, whether the loaded data should be rebalanced by using BALANCING_WEIGHTS
         """
         self.config = config
-        self.set = set
+        self.set = data_split
         self.balanced = balanced
         self.data_fraction = data_fraction
         self.data = None
