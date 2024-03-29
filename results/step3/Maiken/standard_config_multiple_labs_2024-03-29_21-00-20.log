@@ -1,0 +1,147 @@
+[2024-03-29 21:00:20,646] {logger:43} INFO - evaluate_experiment_multiple_labs.py, args: Namespace(excel_path='/home/s202283/code/grieger_validation/results.xlsx', experiment='standard_config_multiple_labs', row='16', save_dir='/home/s202283/code/grieger_validation/results/step3/', test_lab='Maiken')
+================================================================================
+[2024-03-29 21:00:20,646] {logger:44} INFO - config:
+[2024-03-29 21:00:20,646] {logger:45} INFO - parameter name      | parameter value
+[2024-03-29 21:00:20,646] {logger:46} INFO - experiment          : standard_config_multiple_labs
+[2024-03-29 21:00:20,646] {logger:46} INFO - RUN_NAME            : standard_config_multiple_labs_2024-03-29_21-00-20
+[2024-03-29 21:00:20,646] {logger:46} INFO - DEVICE              : cuda
+[2024-03-29 21:00:20,646] {logger:46} INFO - EXPERIMENT_DIR      : /home/s202283/code/grieger_validation/results/step3/Maiken
+[2024-03-29 21:00:20,646] {logger:46} INFO - MODELS_DIR          : /home/s202283/code/grieger_validation/results/step3/Maiken/models
+[2024-03-29 21:00:20,647] {logger:46} INFO - VISUALS_DIR         : /home/s202283/code/grieger_validation/results/step3/Maiken/visuals/standard_config_multiple_labs_2024-03-29_21-00-20
+[2024-03-29 21:00:20,647] {logger:46} INFO - DATA_DIR            : /scratch/s202283/data/grieger_validation
+[2024-03-29 21:00:20,647] {logger:46} INFO - SAMPLE_DURATION     : 4
+[2024-03-29 21:00:20,647] {logger:46} INFO - SAMPLING_RATE       : 64
+[2024-03-29 21:00:20,647] {logger:46} INFO - ORIGINAL_FS         : {'Alessandro': 128, 'Antoine': 512, 'Kornum': 400}
+[2024-03-29 21:00:20,647] {logger:46} INFO - DATA_FILE           : /home/s202283/code/grieger_validation/cache/dataset/multiple_labs.h5
+[2024-03-29 21:00:20,647] {logger:46} INFO - STAGES              : ['Wake', 'Non REM', 'REM']
+[2024-03-29 21:00:20,647] {logger:46} INFO - CHANNELS_IN_MODEL   : ['EEG1']
+[2024-03-29 21:00:20,647] {logger:46} INFO - CHANNELS_IN_TABLE   : ['EEG1', 'EEG2', 'EEG3', 'EEG4', 'EMG']
+[2024-03-29 21:00:20,647] {logger:46} INFO - LABS_CHANNELS       : {'Alessandro': {'EEG1': 0, 'EMG': 1}, 'Antoine': {'EEG1': 0, 'EEG2': 1, 'EEG3': 2, 'EEG4': 3, 'EMG': 4}, 'Maiken': {'EEG1': 0, 'EMG': 1}, 'Kornum': {'EEG1': 0, 'EEG2': 1, 'EMG': 2}, 'Sebastian': {'EEG1': 1, 'EEG2': 2, 'EMG': 0}}
+[2024-03-29 21:00:20,647] {logger:46} INFO - SAMPLES_LEFT        : 3.25
+[2024-03-29 21:00:20,647] {logger:46} INFO - SAMPLES_RIGHT       : 3.25
+[2024-03-29 21:00:20,647] {logger:46} INFO - LABS                : ['Antoine', 'Kornum', 'Alessandro', 'Sebastian', 'Maiken']
+[2024-03-29 21:00:20,647] {logger:46} INFO - ORIGINAL_DATASET_SIZE: 366122
+[2024-03-29 21:00:20,647] {logger:46} INFO - VALIDATION_SPLIT    : 0.2
+[2024-03-29 21:00:20,647] {logger:46} INFO - LOG_INTERVAL        : 10
+[2024-03-29 21:00:20,647] {logger:46} INFO - EXTRA_SAFE_MODELS   : False
+[2024-03-29 21:00:20,647] {logger:46} INFO - BATCH_SIZE          : 256
+[2024-03-29 21:00:20,647] {logger:46} INFO - DATA_FRACTION       : True
+[2024-03-29 21:00:20,648] {logger:46} INFO - EPOCHS              : 50
+[2024-03-29 21:00:20,648] {logger:46} INFO - WARMUP_EPOCHS       : 12
+[2024-03-29 21:00:20,648] {logger:46} INFO - S_OPTIM_MODE        : exp
+[2024-03-29 21:00:20,648] {logger:46} INFO - S_OPTIM_PARAS       : [0.06]
+[2024-03-29 21:00:20,648] {logger:46} INFO - LEARNING_RATE       : 0.000256
+[2024-03-29 21:00:20,648] {logger:46} INFO - OPTIMIZER           : <class 'torch.optim.adam.Adam'>
+[2024-03-29 21:00:20,648] {logger:46} INFO - OPTIM_PARAS         : {}
+[2024-03-29 21:00:20,648] {logger:46} INFO - L1_WEIGHT_DECAY     : 0
+[2024-03-29 21:00:20,648] {logger:46} INFO - L2_WEIGHT_DECAY     : 0.0001
+[2024-03-29 21:00:20,648] {logger:46} INFO - BATCH_SIZE_EVAL     : 512
+[2024-03-29 21:00:20,648] {logger:46} INFO - FILTERS             : 96
+[2024-03-29 21:00:20,648] {logger:46} INFO - CLASSIFIER_DROPOUT  : [0.2, 0.2]
+[2024-03-29 21:00:20,648] {logger:46} INFO - FEATURE_EXTR_DROPOUT: [0.0, 0.2, 0.0, 0.2, 0.0, 0.2, 0.0, 0.2]
+[2024-03-29 21:00:20,648] {logger:46} INFO - MODEL_NAME          : model_8conv_2fc
+[2024-03-29 21:00:20,648] {logger:50} INFO - 
+[2024-03-29 21:00:20,648] {logger:51} INFO - ================================================================================
+[2024-03-29 21:00:20,648] {logger:52} INFO - evaluate best model of experiment standard_config_multiple_labs on dataset Maiken
+[2024-03-29 21:00:20,648] {logger:53} INFO - ================================================================================
+[2024-03-29 21:00:20,648] {logger:54} INFO - 
+[2024-03-29 21:00:20,648] {logger:50} INFO - 
+[2024-03-29 21:00:20,649] {logger:51} INFO - ================================================================================
+[2024-03-29 21:00:20,649] {logger:52} INFO - start evaluation
+[2024-03-29 21:00:20,649] {logger:53} INFO - ================================================================================
+[2024-03-29 21:00:20,649] {logger:54} INFO - 
+[2024-03-29 21:03:25,959] {dataloader:174} INFO - data distribution in database for dataset test:
+	Maiken              : {'Wake': 20986, 'Non REM': 48128, 'REM': 5432}
+[2024-03-29 21:03:25,963] {dataloader:202} INFO - data distribution after processing:
+	Maiken              : {'Wake': 20986, 'Non REM': 48128, 'REM': 5432}
+[2024-03-29 21:03:27,768] {evaluate_experiment_multiple_labs:55} INFO - loaded model:
+Model(
+  (feature_extractor): Sequential(
+    (0): BatchNorm1d(1, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (1): Conv1d(1, 96, kernel_size=(5,), stride=(1,))
+    (2): ReLU(inplace=True)
+    (3): BatchNorm1d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (4): Dropout(p=0.0, inplace=False)
+    (5): Conv1d(96, 96, kernel_size=(5,), stride=(2,))
+    (6): ReLU(inplace=True)
+    (7): BatchNorm1d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (8): Dropout(p=0.2, inplace=False)
+    (9): Conv1d(96, 96, kernel_size=(5,), stride=(1,))
+    (10): ReLU(inplace=True)
+    (11): BatchNorm1d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (12): Dropout(p=0.0, inplace=False)
+    (13): Conv1d(96, 96, kernel_size=(5,), stride=(2,))
+    (14): ReLU(inplace=True)
+    (15): BatchNorm1d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (16): Dropout(p=0.2, inplace=False)
+    (17): Conv1d(96, 96, kernel_size=(5,), stride=(1,))
+    (18): ReLU(inplace=True)
+    (19): BatchNorm1d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (20): Dropout(p=0.0, inplace=False)
+    (21): Conv1d(96, 96, kernel_size=(5,), stride=(2,))
+    (22): ReLU(inplace=True)
+    (23): BatchNorm1d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (24): Dropout(p=0.2, inplace=False)
+    (25): Conv1d(96, 96, kernel_size=(5,), stride=(1,))
+    (26): ReLU(inplace=True)
+    (27): BatchNorm1d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (28): Dropout(p=0.0, inplace=False)
+    (29): Conv1d(96, 96, kernel_size=(5,), stride=(2,))
+    (30): ReLU(inplace=True)
+    (31): BatchNorm1d(96, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+    (32): Dropout(p=0.2, inplace=False)
+  )
+  (classifier): Sequential(
+    (0): Dropout(p=0.2, inplace=False)
+    (1): Linear(in_features=10848, out_features=80, bias=True)
+    (2): ReLU(inplace=True)
+    (3): Dropout(p=0.2, inplace=False)
+    (4): Linear(in_features=80, out_features=3, bias=True)
+  )
+)
+[2024-03-29 21:03:42,655] {result_logger:97} INFO - scores for sleep stages on dataset: Maiken
+[2024-03-29 21:03:42,805] {result_logger:103} INFO - precision on Wake: 0.662
+[2024-03-29 21:03:42,911] {result_logger:104} INFO - recall on Wake: 0.815
+[2024-03-29 21:03:43,004] {result_logger:107} INFO - F1-score on Wake: 0.730
+[2024-03-29 21:03:43,004] {result_logger:108} INFO - 
+[2024-03-29 21:03:43,153] {result_logger:103} INFO - precision on Non REM: 0.953
+[2024-03-29 21:03:43,248] {result_logger:104} INFO - recall on Non REM: 0.828
+[2024-03-29 21:03:43,342] {result_logger:107} INFO - F1-score on Non REM: 0.886
+[2024-03-29 21:03:43,342] {result_logger:108} INFO - 
+[2024-03-29 21:03:43,488] {result_logger:103} INFO - precision on REM: 0.600
+[2024-03-29 21:03:43,578] {result_logger:104} INFO - recall on REM: 0.765
+[2024-03-29 21:03:43,669] {result_logger:107} INFO - F1-score on REM: 0.672
+[2024-03-29 21:03:43,669] {result_logger:108} INFO - 
+[2024-03-29 21:03:43,688] {result_logger:111} INFO - average precision on sleep stages: 0.738
+[2024-03-29 21:03:43,706] {result_logger:113} INFO - average recall on sleep stages: 0.802
+[2024-03-29 21:03:43,725] {result_logger:115} INFO - average F1-score on sleep stages: 0.763
+[2024-03-29 21:03:43,726] {evaluate_experiment_multiple_labs:62} INFO - 
+[2024-03-29 21:03:43,726] {result_logger:130} INFO - confusion matrix for sleep stages on dataset: Maiken
+[2024-03-29 21:03:43,739] {result_logger:134} INFO - 
+[[17095  1523  2365]
+ [ 7894 39831   408]
+ [  842   436  4152]]
+[2024-03-29 21:03:44,127] {result_logger:141} INFO - 
+[[ 81.47%   7.26%  11.27%]
+ [ 16.40%  82.75%   0.85%]
+ [ 15.51%   8.03%  76.46%]]
+[2024-03-29 21:03:44,384] {result_logger:145} INFO - 
+[[ 66.18%   3.64%  34.15%]
+ [ 30.56%  95.31%   5.89%]
+ [  3.26%   1.04%  59.96%]]
+[2024-03-29 21:03:44,841] {result_logger:74} INFO - transformation matrix for sleep stages on dataset: Maiken
+[2024-03-29 21:03:44,841] {result_logger:77} INFO - actual:
+[2024-03-29 21:03:44,841] {result_logger:78} INFO - 
+[[93.71%  6.27%  0.02%]
+ [ 2.26% 97.23%  0.50%]
+ [ 4.24%  0.29% 95.47%]]
+[2024-03-29 21:03:44,841] {result_logger:79} INFO - predicted:
+[2024-03-29 21:03:44,842] {result_logger:80} INFO - 
+[[87.84%  9.57%  2.59%]
+ [ 5.37% 93.72%  0.91%]
+ [12.92%  2.19% 84.88%]]
+[2024-03-29 21:03:45,170] {logger:50} INFO - 
+[2024-03-29 21:03:45,170] {logger:51} INFO - ================================================================================
+[2024-03-29 21:03:45,170] {logger:52} INFO - finished evaluation
+[2024-03-29 21:03:45,170] {logger:53} INFO - ================================================================================
+[2024-03-29 21:03:45,170] {logger:54} INFO - 
