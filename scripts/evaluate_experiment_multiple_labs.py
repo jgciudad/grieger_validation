@@ -101,4 +101,4 @@ if __name__ == '__main__':
 
     logger.fancy_log('evaluate best model of experiment {} on dataset {}'.format(args.experiment, args.test_lab))
     # perform evaluation
-    evaluation(test_lab=args.test_lab, r=args.row, excel_path=args.excel_path)
+    evaluation(test_lab=args.test_lab, r=int(args.row), excel_path=args.excel_path)
