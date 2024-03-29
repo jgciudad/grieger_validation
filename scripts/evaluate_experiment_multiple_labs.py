@@ -9,7 +9,6 @@ import torch
 import torch.utils.data as t_data
 import openpyxl
 import sklearn.metrics
-import imblearn.metrics
 
 sys.path.insert(0, realpath(join(dirname(__file__), '..')))
 
@@ -69,8 +68,11 @@ def evaluation(test_lab, r, excel_path):
     recall = sklearn.metrics.recall_score(y_true=labels['actual'], y_pred=labels['predicted'], average=None)
     precision = sklearn.metrics.precision_score(y_true=labels['actual'], y_pred=labels['predicted'], average=None)
     f1score = sklearn.metrics.f1_score(y_true=labels['actual'], y_pred=labels['predicted'], average=None)
-    specificity = imblearn.metrics.specificity_score(y_true=labels['actual'], y_pred=labels['predicted'], average=None)
     acc = [sklearn.metrics.accuracy_score(y_true=labels['actual']==c, y_pred=labels['predicted']==c) for c in range(len(config.STAGES))]
+    specificity = []
+    for c in range(len(config.STAGES)):
+         tn, fp, fn, tp = sklearn.metrics.confusion_matrix(y_true=labels['actual']==c, y_pred=labels['predicted']==c).ravel()
+         specificity.append(tn / (tn+fp))
     bal_acc = (recall + specificity)/2
     
     wb = openpyxl.load_workbook(excel_path)   
