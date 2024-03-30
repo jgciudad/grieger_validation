@@ -13,7 +13,7 @@ data:
 experiment:
   data:
     file: 'data_tuebingen_main_stages.h5'  # stored in cache dir
-    stages: ['Wake', 'REM', 'Non REM']
+    stages: ['Wake', 'Non REM', 'REM']
     channels: ['EEG_PR']
     balanced_training: False
 
