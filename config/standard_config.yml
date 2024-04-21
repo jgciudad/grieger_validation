@@ -2,7 +2,7 @@ general:
   device: 'cuda'
 
 dirs:
-  cache: './cache/dataset'  # directory for cached files like the tranformed data file (see experiment.data.file)
+  cache: '/home/s202283/code/grieger_validation/cache/dataset'  # directory for cached files like the tranformed data file (see experiment.data.file)
   data: '/scratch/s202283/data/mice-data-tuebingen/data/'  # directory containing data
 
 data:
