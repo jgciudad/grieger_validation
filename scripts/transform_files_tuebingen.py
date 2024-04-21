@@ -51,8 +51,11 @@ def read_h5(h5_f_name: str):
             features[channel] = np.double(data_c) * scale_c / 6553.6 + offset_c
 
             # downsample data to the SAMPLING_RATE specified in config
-            features[channel] = downsample(features[channel], sr_old=sr, sr_new=config.SAMPLING_RATE,
-                                           fmax=0.4 * config.SAMPLING_RATE, outtype='sos', method='pad')
+            s = downsample(features[channel], sr_old=sr, sr_new=config.SAMPLING_RATE, fmax=0.4 * config.SAMPLING_RATE, outtype='sos', method='pad')
+        
+            s = (s - np.mean(s, keepdims=True)) / np.std(s, keepdims=True)
+
+            features[channel] = s
 
         # load scores from h5 file and map them to stages using SCORING_MAP
         scores = h5_f['Scoring/scores'][:]
