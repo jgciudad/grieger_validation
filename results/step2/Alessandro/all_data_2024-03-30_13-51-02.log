@@ -1,0 +1,52 @@
+[2024-03-30 13:51:02,675] {logger:43} INFO - evaluate_experiment_multiple_labs.py, args: Namespace(excel_path='/home/s202283/code/grieger_validation/results.xlsx', experiment='all_data', row='9', save_dir='/home/s202283/code/grieger_validation/results/step2/', test_lab='Alessandro')
+================================================================================
+[2024-03-30 13:51:02,675] {logger:44} INFO - config:
+[2024-03-30 13:51:02,675] {logger:45} INFO - parameter name      | parameter value
+[2024-03-30 13:51:02,675] {logger:46} INFO - experiment          : all_data
+[2024-03-30 13:51:02,675] {logger:46} INFO - RUN_NAME            : all_data_2024-03-30_13-51-02
+[2024-03-30 13:51:02,675] {logger:46} INFO - DEVICE              : cuda
+[2024-03-30 13:51:02,675] {logger:46} INFO - EXPERIMENT_DIR      : /home/s202283/code/grieger_validation/results/step2/Alessandro
+[2024-03-30 13:51:02,675] {logger:46} INFO - MODELS_DIR          : /home/s202283/code/grieger_validation/results/step2/Alessandro/models
+[2024-03-30 13:51:02,675] {logger:46} INFO - VISUALS_DIR         : /home/s202283/code/grieger_validation/results/step2/Alessandro/visuals/all_data_2024-03-30_13-51-02
+[2024-03-30 13:51:02,675] {logger:46} INFO - DATA_DIR            : /scratch/s202283/data/grieger_validation
+[2024-03-30 13:51:02,675] {logger:46} INFO - SAMPLE_DURATION     : 4
+[2024-03-30 13:51:02,675] {logger:46} INFO - SAMPLING_RATE       : 64
+[2024-03-30 13:51:02,675] {logger:46} INFO - ORIGINAL_FS         : {'Alessandro': 128, 'Antoine': 512, 'Kornum': 400}
+[2024-03-30 13:51:02,676] {logger:46} INFO - DATA_FILE           : /home/s202283/code/grieger_validation/cache/dataset/multiple_labs.h5
+[2024-03-30 13:51:02,676] {logger:46} INFO - STAGES              : ['Wake', 'Non REM', 'REM']
+[2024-03-30 13:51:02,676] {logger:46} INFO - CHANNELS_IN_MODEL   : ['EEG1']
+[2024-03-30 13:51:02,676] {logger:46} INFO - CHANNELS_IN_TABLE   : ['EEG1', 'EEG2', 'EEG3', 'EEG4', 'EMG']
+[2024-03-30 13:51:02,676] {logger:46} INFO - LABS_CHANNELS       : {'Alessandro': {'EEG1': 0, 'EMG': 1}, 'Antoine': {'EEG1': 0, 'EEG2': 1, 'EEG3': 2, 'EEG4': 3, 'EMG': 4}, 'Maiken': {'EEG1': 0, 'EMG': 1}, 'Kornum': {'EEG1': 0, 'EEG2': 1, 'EMG': 2}, 'Sebastian': {'EEG1': 1, 'EEG2': 2, 'EMG': 0}}
+[2024-03-30 13:51:02,676] {logger:46} INFO - SAMPLES_LEFT        : 3.25
+[2024-03-30 13:51:02,676] {logger:46} INFO - SAMPLES_RIGHT       : 3.25
+[2024-03-30 13:51:02,676] {logger:46} INFO - LABS                : ['Antoine', 'Kornum', 'Alessandro', 'Sebastian', 'Maiken']
+[2024-03-30 13:51:02,676] {logger:46} INFO - ORIGINAL_DATASET_SIZE: 366122
+[2024-03-30 13:51:02,676] {logger:46} INFO - VALIDATION_SPLIT    : 0.2
+[2024-03-30 13:51:02,676] {logger:46} INFO - LOG_INTERVAL        : 10
+[2024-03-30 13:51:02,676] {logger:46} INFO - EXTRA_SAFE_MODELS   : False
+[2024-03-30 13:51:02,676] {logger:46} INFO - BATCH_SIZE          : 256
+[2024-03-30 13:51:02,676] {logger:46} INFO - DATA_FRACTION       : False
+[2024-03-30 13:51:02,676] {logger:46} INFO - EPOCHS              : 50
+[2024-03-30 13:51:02,676] {logger:46} INFO - WARMUP_EPOCHS       : 12
+[2024-03-30 13:51:02,676] {logger:46} INFO - S_OPTIM_MODE        : exp
+[2024-03-30 13:51:02,676] {logger:46} INFO - S_OPTIM_PARAS       : [0.06]
+[2024-03-30 13:51:02,676] {logger:46} INFO - LEARNING_RATE       : 0.000256
+[2024-03-30 13:51:02,676] {logger:46} INFO - OPTIMIZER           : <class 'torch.optim.adam.Adam'>
+[2024-03-30 13:51:02,676] {logger:46} INFO - OPTIM_PARAS         : {}
+[2024-03-30 13:51:02,676] {logger:46} INFO - L1_WEIGHT_DECAY     : 0
+[2024-03-30 13:51:02,676] {logger:46} INFO - L2_WEIGHT_DECAY     : 0.0001
+[2024-03-30 13:51:02,676] {logger:46} INFO - BATCH_SIZE_EVAL     : 512
+[2024-03-30 13:51:02,676] {logger:46} INFO - FILTERS             : 96
+[2024-03-30 13:51:02,676] {logger:46} INFO - CLASSIFIER_DROPOUT  : [0.2, 0.2]
+[2024-03-30 13:51:02,676] {logger:46} INFO - FEATURE_EXTR_DROPOUT: [0.0, 0.2, 0.0, 0.2, 0.0, 0.2, 0.0, 0.2]
+[2024-03-30 13:51:02,676] {logger:46} INFO - MODEL_NAME          : model_8conv_2fc
+[2024-03-30 13:51:02,677] {logger:50} INFO - 
+[2024-03-30 13:51:02,677] {logger:51} INFO - ================================================================================
+[2024-03-30 13:51:02,677] {logger:52} INFO - evaluate best model of experiment all_data on dataset Alessandro
+[2024-03-30 13:51:02,677] {logger:53} INFO - ================================================================================
+[2024-03-30 13:51:02,677] {logger:54} INFO - 
+[2024-03-30 13:51:02,677] {logger:50} INFO - 
+[2024-03-30 13:51:02,677] {logger:51} INFO - ================================================================================
+[2024-03-30 13:51:02,677] {logger:52} INFO - start evaluation
+[2024-03-30 13:51:02,677] {logger:53} INFO - ================================================================================
+[2024-03-30 13:51:02,677] {logger:54} INFO - 
