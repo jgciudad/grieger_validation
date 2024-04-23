@@ -116,12 +116,12 @@ def transform():
         table = f.create_table(f.root, 'multiple_labs', table_desc, 'multiple_labs_data')
 
         # determine which files to transform for each dataset based on DATA_SPLIT
-        labs = [f for f in os.listdir(config.DATA_DIR) if '.' not in f]
+        labs = [f for f in os.listdir(config.DATA_DIR) if not f.startswith('.') and 'MACOSX' not in f]
         # iterate over files, load them and write them to the created table
         for l in labs:
             lab_name = l.split('-')[0]
 
-            mice = [f for f in os.listdir(os.path.join(config.DATA_DIR, l)) if not f.startswith('.')]
+            mice = [f for f in os.listdir(os.path.join(config.DATA_DIR, l)) if not f.startswith('.') and 'MACOSX' not in f]
 
             for m in mice:
                 try:
