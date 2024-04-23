@@ -1,0 +1,58 @@
+[2024-04-21 16:14:57,662] {logger:43} INFO - evaluate_experiment.py, args: Namespace(dataset='test', experiment='standard_config')
+================================================================================
+[2024-04-21 16:14:57,662] {logger:44} INFO - config:
+[2024-04-21 16:14:57,663] {logger:45} INFO - parameter name      | parameter value
+[2024-04-21 16:14:57,663] {logger:46} INFO - experiment          : standard_config
+[2024-04-21 16:14:57,664] {logger:46} INFO - RUN_NAME            : standard_config_2024-04-21_16-14-57
+[2024-04-21 16:14:57,665] {logger:46} INFO - DEVICE              : cuda
+[2024-04-21 16:14:57,665] {logger:46} INFO - EXPERIMENT_DIR      : /home/s202283/code/grieger_validation/results/standard_config
+[2024-04-21 16:14:57,666] {logger:46} INFO - MODELS_DIR          : /home/s202283/code/grieger_validation/results/standard_config/models
+[2024-04-21 16:14:57,666] {logger:46} INFO - VISUALS_DIR         : /home/s202283/code/grieger_validation/results/standard_config/visuals/standard_config_2024-04-21_16-14-57
+[2024-04-21 16:14:57,667] {logger:46} INFO - DATA_DIR            : /scratch/s202283/data/mice-data-tuebingen/data
+[2024-04-21 16:14:57,667] {logger:46} INFO - SAMPLE_DURATION     : 10
+[2024-04-21 16:14:57,668] {logger:46} INFO - SAMPLING_RATE       : 64
+[2024-04-21 16:14:57,668] {logger:46} INFO - SCORING_MAP         : {'Wake': [1, 17], 'REM': [3, 19], 'Non REM': [2, 18], 'Pre REM': [4, 20], 'Artifact': [8, 24]}
+[2024-04-21 16:14:57,669] {logger:46} INFO - STAGE_MAP           : {'Wake': 'Wake', 'REM': 'REM', 'Non REM': 'Non REM', 'Pre REM': 'Pre REM', 'Artifact': 'Artifact'}
+[2024-04-21 16:14:57,670] {logger:46} INFO - DATA_SPLIT          : {'train': ['M19', 'M20', 'M21', 'M22', 'M23', 'M24', 'M25', 'M26', 'M27', 'M28', 'M29', 'M31', 'M32', 'M33'], 'valid': ['M34', 'M35'], 'test': ['M36', 'M37']}
+[2024-04-21 16:14:57,670] {logger:46} INFO - DATA_FILE           : ./cache/dataset/data_tuebingen.h5
+[2024-04-21 16:14:57,671] {logger:46} INFO - STAGES              : ['Wake', 'REM', 'Non REM', 'Pre REM', 'Artifact']
+[2024-04-21 16:14:57,671] {logger:46} INFO - BALANCED_TRAINING   : True
+[2024-04-21 16:14:57,672] {logger:46} INFO - BALANCING_WEIGHTS   : [0.3, 0.18, 0.24, 0.14, 0.14]
+[2024-04-21 16:14:57,672] {logger:46} INFO - CHANNELS            : ['EEG_FR', 'EEG_PR', 'EEG_PL', 'EMG']
+[2024-04-21 16:14:57,673] {logger:46} INFO - SAMPLES_LEFT        : 1
+[2024-04-21 16:14:57,673] {logger:46} INFO - SAMPLES_RIGHT       : 1
+[2024-04-21 16:14:57,674] {logger:46} INFO - LOG_INTERVAL        : 10
+[2024-04-21 16:14:57,675] {logger:46} INFO - EXTRA_SAFE_MODELS   : False
+[2024-04-21 16:14:57,676] {logger:46} INFO - BATCH_SIZE          : 256
+[2024-04-21 16:14:57,676] {logger:46} INFO - DATA_FRACTION       : 1.0
+[2024-04-21 16:14:57,677] {logger:46} INFO - DATA_FRACTION_STRAT : None
+[2024-04-21 16:14:57,677] {logger:46} INFO - EPOCHS              : 50
+[2024-04-21 16:14:57,679] {logger:46} INFO - WARMUP_EPOCHS       : 12
+[2024-04-21 16:14:57,679] {logger:46} INFO - S_OPTIM_MODE        : exp
+[2024-04-21 16:14:57,679] {logger:46} INFO - S_OPTIM_PARAS       : [0.06]
+[2024-04-21 16:14:57,679] {logger:46} INFO - LEARNING_RATE       : 0.000256
+[2024-04-21 16:14:57,680] {logger:46} INFO - OPTIMIZER           : <class 'torch.optim.rmsprop.RMSprop'>
+[2024-04-21 16:14:57,680] {logger:46} INFO - OPTIM_PARAS         : {}
+[2024-04-21 16:14:57,681] {logger:46} INFO - L1_WEIGHT_DECAY     : 0
+[2024-04-21 16:14:57,682] {logger:46} INFO - L2_WEIGHT_DECAY     : 0
+[2024-04-21 16:14:57,683] {logger:46} INFO - BATCH_SIZE_EVAL     : 512
+[2024-04-21 16:14:57,683] {logger:46} INFO - FILTERS             : 64
+[2024-04-21 16:14:57,684] {logger:46} INFO - CLASSIFIER_DROPOUT  : [0.0, 0.0]
+[2024-04-21 16:14:57,685] {logger:46} INFO - FEATURE_EXTR_DROPOUT: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+[2024-04-21 16:14:57,685] {logger:46} INFO - MODEL_NAME          : model_8conv_2fc
+[2024-04-21 16:14:57,686] {logger:46} INFO - GAIN                : 0.0
+[2024-04-21 16:14:57,686] {logger:46} INFO - FLIP                : 0.0
+[2024-04-21 16:14:57,687] {logger:46} INFO - FLIP_ALL            : 0.0
+[2024-04-21 16:14:57,688] {logger:46} INFO - WINDOW_WARP_SIZE    : 0.0
+[2024-04-21 16:14:57,688] {logger:46} INFO - FLIP_HORI           : 0.0
+[2024-04-21 16:14:57,689] {logger:46} INFO - TIME_SHIFT          : 0.0
+[2024-04-21 16:15:02,214] {logger:50} INFO - 
+[2024-04-21 16:15:02,215] {logger:51} INFO - ================================================================================
+[2024-04-21 16:15:02,216] {logger:52} INFO - evaluate best model of experiment standard_config on dataset test
+[2024-04-21 16:15:02,216] {logger:53} INFO - ================================================================================
+[2024-04-21 16:15:02,217] {logger:54} INFO - 
+[2024-04-21 16:15:05,333] {logger:50} INFO - 
+[2024-04-21 16:15:05,334] {logger:51} INFO - ================================================================================
+[2024-04-21 16:15:05,334] {logger:52} INFO - start evaluation
+[2024-04-21 16:15:05,335] {logger:53} INFO - ================================================================================
+[2024-04-21 16:15:05,335] {logger:54} INFO - 
