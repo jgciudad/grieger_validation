@@ -160,7 +160,7 @@ def transform():
 if __name__ == '__main__':
     args = parse()
     # load config, dirs are not needed here, because we do not write a log
-    config = ConfigLoader(args.experiment, create_dirs=False)
+    config = ConfigLoader(experiment=args.experiment, create_dirs=False)
 
     # transform files
     transform()

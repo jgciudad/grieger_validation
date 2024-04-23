@@ -22,7 +22,7 @@ def update_dict(d_to_update: dict, update: dict):
 
 
 class ConfigLoader:
-    def __init__(self, save_dir, experiment='standard_config', create_dirs=True):
+    def __init__(self, save_dir=None, experiment='standard_config', create_dirs=True):
         """general class to load config from yaml files into fields of an instance of this class
 
         first the config from standard_config.yml is loaded and then updated with the entries in the config file
@@ -48,7 +48,11 @@ class ConfigLoader:
         assert self.DEVICE in ['cpu', 'cuda'], 'DEVICE only support `cpu` or `cuda`'
 
         # dirs
-        self.EXPERIMENT_DIR = save_dir
+        if save_dir is None:
+            base_dir = realpath(join(dirname(__file__), '..'))
+            self.EXPERIMENT_DIR = join(base_dir, 'results', self.experiment)
+        else:
+            self.EXPERIMENT_DIR = save_dir
         """general directory with results from experiment"""
         self.MODELS_DIR = join(self.EXPERIMENT_DIR, 'models')
         """directory in `EXPERIMENT_DIR` for `extra_safe` models"""
