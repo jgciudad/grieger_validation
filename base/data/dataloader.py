@@ -113,27 +113,14 @@ class TuebingenDataloader(tud.Dataset):
         
         lab_sizes = [sum(self.train_dist[lab].values()) for lab in self.train_dist]
 
-        if self.config.DATA_FRACTION == False:
-            # weights for both sleep stages and labs
+        # weights for both sleep stages and labs
 
-            for lab in self.train_dist:
-                loss_weights[lab] = {}
-
-                for stage in self.config.STAGES:
-                    loss_weights[lab][stage] = sum(lab_sizes) / len(self.train_dist) / (len(self.config.STAGES)) / self.train_dist[lab][stage]
-
-        else:
-            # weights only for sleep stages
+        for lab in self.train_dist:
+            loss_weights[lab] = {}
 
             for stage in self.config.STAGES:
-
-                stage_counter = 0 # to sum epochs of each stage across labs
-
-                for lab in self.train_dist:
-                    stage_counter += self.train_dist[lab][stage]
-                loss_weights[stage] = sum(lab_sizes) / (len(self.config.STAGES)) / stage_counter
-                
-        
+                loss_weights[lab][stage] = sum(lab_sizes) / len(self.train_dist) / (len(self.config.STAGES)) / self.train_dist[lab][stage]
+                        
         return loss_weights
     
     def select_channels(self, index):

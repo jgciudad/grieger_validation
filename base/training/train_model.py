@@ -44,13 +44,9 @@ def train(config, epoch, model, optimizer, trainloader, loss_weigths=None):
         outputs = model(features)
 
         weights_mask = torch.zeros(labels.size())
-        if config.DATA_FRACTION == True:
-            for s in config.STAGES:
-                weights_mask[labels == config.STAGES.index(s)] = loss_weigths[s]
-        else:
-            for s in config.STAGES:
-                for l in labs.unique().tolist():
-                    weights_mask[(labels == config.STAGES.index(s)) & (labs == l)] = loss_weigths[config.LABS[l]][s]
+        for s in config.STAGES:
+            for l in labs.unique().tolist():
+                weights_mask[(labels == config.STAGES.index(s)) & (labs == l)] = loss_weigths[config.LABS[l]][s]
 
         criterion = nn.NLLLoss(reduction='none')
         loss = criterion(outputs, labels)
