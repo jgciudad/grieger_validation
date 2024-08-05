@@ -19,6 +19,7 @@ from base.logger import Logger
 from base.training.scheduled_optim import ScheduledOptim
 from base.training.train_model import train, snapshot
 
+import json
 
 def parse():
     """define and parse arguments for the script"""
@@ -125,6 +126,11 @@ def training():
     result_logger.log_metrics({'loss': losses})
     logger.fancy_log('finished training')
     logger.fancy_log('best model on epoch: {} \tf1-score: {:.4f}'.format(best_epoch, best_avg_f1_score))
+
+    with open(join(config.VISUALS_DIR, "f1_score_curve.json"), 'w') as f:
+        # indent=2 is not needed but makes the file human-readable 
+        # if the data is nested
+        json.dump(f1_scores['valid']['avg'], f, indent=2) 
 
 
 if __name__ == '__main__':

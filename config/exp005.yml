@@ -15,7 +15,7 @@ experiment:
     file: 'data_tuebingen_main_stages.h5'  # stored in cache dir
     stages: ['Wake', 'Non REM', 'REM']
     channels: ['EEG_PR']
-    balanced_training: False
+    balanced_training: False # This is rebalancing the dataset. If false, we use weighted loss.
 
   training:
     optimizer:
