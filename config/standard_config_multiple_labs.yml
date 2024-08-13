@@ -27,7 +27,7 @@ experiment:
     samples_left: 3.25
     samples_right: 3.25
     original_dataset_size: 366122 # rebalanced dataset #2 (see table 2 of Grieger)
-    validation_split: 0.2
+    validation_split: 0.1392 # in the original paper, the size of the validation set is 13.92% of the size of the training set
     labs: ['Antoine', 'Kornum', 'Alessandro', 'Sebastian', 'Maiken']
     labs_channels: 
       Alessandro: 
