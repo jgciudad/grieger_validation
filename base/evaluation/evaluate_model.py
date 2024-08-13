@@ -20,11 +20,12 @@ def evaluate(config: ConfigLoader, model, validationloader):
     model = model.eval()
     predicted_labels = np.empty(0, dtype='int')
     actual_labels = np.empty(0, dtype='int')
+    mice_concat = np.empty(0, dtype='str')
     loss = torch.zeros(1)
 
     with torch.no_grad():
         for data in validationloader:
-            features, labels, labs = data
+            features, labels, labs, mice = data
             features = features.to(config.DEVICE)
             labels = labels.long().to(config.DEVICE)
 
@@ -37,5 +38,6 @@ def evaluate(config: ConfigLoader, model, validationloader):
 
             predicted_labels = np.r_[predicted_labels, predicted_labels_i.tolist()]
             actual_labels = np.r_[actual_labels, labels.tolist()]
+            mice_concat = np.r_[mice_concat, mice]
 
-    return {'actual': actual_labels, 'predicted': predicted_labels}, loss.item()
+    return {'actual': actual_labels, 'predicted': predicted_labels}, loss.item(), mice_concat

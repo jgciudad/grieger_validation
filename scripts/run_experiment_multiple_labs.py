@@ -71,7 +71,7 @@ def training(test_lab):
         losses['train'].append(loss_train)
 
         # evaluate epoch and save metrics
-        labels_valid, loss_valid = evaluate(config, model, validationloader)
+        labels_valid, loss_valid, _ = evaluate(config, model, validationloader)
         losses['valid'].append(loss_valid)
 
         # calculate f1-scores for given validation and training labels and log them

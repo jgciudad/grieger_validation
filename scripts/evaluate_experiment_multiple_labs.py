@@ -49,13 +49,13 @@ def evaluation(test_lab, r, excel_path):
     model = import_module('.' + config.MODEL_NAME, 'base.models').Model(config).to(config.DEVICE).eval()
     model_file = join(config.EXPERIMENT_DIR, config.MODEL_NAME + '-best.pth')
     if isfile(model_file):
-        model.load_state_dict(torch.load(model_file)['state_dict'])
+        model.load_state_dict(torch.load(model_file, map_location=config.DEVICE)['state_dict'])
     else:
         raise ValueError('model_file {} does not exist'.format(model_file))
     logger.logger.info('loaded model:\n' + str(model))
 
     # evaluate model
-    labels, _ = evaluate(config, model, dataloader)
+    labels, _, mice = evaluate(config, model, dataloader)
 
     # log/plot results
     result_logger.log_sleep_stage_f1_scores(labels['actual'], labels['predicted'], test_lab)

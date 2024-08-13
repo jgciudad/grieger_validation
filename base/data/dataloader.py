@@ -103,7 +103,7 @@ class TuebingenDataloader(tud.Dataset):
             feature = feature[:, int(self.config.SAMPLING_RATE*self.config.SAMPLE_DURATION*(1-left_rest)) : -int(self.config.SAMPLING_RATE*self.config.SAMPLE_DURATION*(1-right_rest))]
 
         # transform the label to it's index in STAGES
-        return feature, self.config.STAGES.index(str(self.data[index][COLUMN_LABEL], 'utf-8')), self.config.LABS.index(str(self.data[index][COLUMN_LAB], 'utf-8'))
+        return feature, self.config.STAGES.index(str(self.data[index][COLUMN_LABEL], 'utf-8')), self.config.LABS.index(str(self.data[index][COLUMN_LAB], 'utf-8')), str(self.data[index]['mouse_id'], 'utf-8')
 
     def __len__(self):
         return self.indices.size

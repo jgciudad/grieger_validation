@@ -33,7 +33,7 @@ def train(config, epoch, model, optimizer, trainloader, loss_weigths=None):
 
     for i, data in enumerate(trainloader, 0):
         # get the inputs; data is a list of [inputs, labels]
-        features, labels, labs = data
+        features, labels, labs, _ = data
         features = features.to(config.DEVICE)
         labels = labels.long().to(config.DEVICE)
         labs = labs.long().to(config.DEVICE)
