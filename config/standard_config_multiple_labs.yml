@@ -18,7 +18,7 @@ data:
 experiment:
   data:
     file: 'multiple_labs.h5'  # stored in cache dir
-    stages: ['Wake', 'Non REM', 'REM'] # ['Wake', 'Non REM', 'REM', 'Art']
+    stages: ['Wake', 'REM', 'Non REM'] # ['Wake', 'Non REM', 'REM', 'Art']
     # mask_artifacts: True
     # balanced_training: False
     # balancing_weights: [0.30, 0.18, 0.24, 0.14, 0.14]
