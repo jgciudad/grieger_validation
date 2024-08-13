@@ -9,6 +9,7 @@ import torch
 import torch.utils.data as t_data
 import openpyxl
 import sklearn.metrics
+import json
 
 sys.path.insert(0, realpath(join(dirname(__file__), '..')))
 
@@ -75,12 +76,11 @@ def evaluation(test_lab, r, excel_path):
          specificity.append(tn / (tn+fp))
     bal_acc = (recall + specificity)/2
     
+    # save metric in excel sheet
     wb = openpyxl.load_workbook(excel_path)   
     sheet = wb["Sheet1"]
     sheet.cell(row = r, column = 2).value = test_lab
     for idx, c in enumerate(config.STAGES):
-        class_first_column = idx+3
-
         sheet.cell(row = r, column = 3 + 5*idx).value = recall[idx]
         sheet.cell(row = r, column = 3 + 5*idx + 1).value = precision[idx]
         sheet.cell(row = r, column = 3 + 5*idx + 2).value = f1score[idx]
@@ -88,6 +88,13 @@ def evaluation(test_lab, r, excel_path):
         sheet.cell(row = r, column = 3 + 5*idx + 4).value = bal_acc[idx]
 
     wb.save(excel_path)
+
+    # save dict with real labels, predictions and mice
+    labels['actual'] = labels['actual'].tolist()
+    labels['predicted'] = labels['predicted'].tolist()
+    labels['mouse'] = mice.tolist()
+    with open(join(config.EXPERIMENT_DIR, "test_dict.json"), "w") as outfile: 
+        json.dump(labels, outfile)
 
     logger.fancy_log('finished evaluation')
 
